@@ -2,66 +2,81 @@ using UnityEngine;
 
 public class BuildingDrag : MonoBehaviour
 {
-    public GridManager gridManager; // Ссылка на GridManager для работы с сеткой
+    [Tooltip("Ссылка на GridManager, можно не указывать — найдём автоматически")]
+    public GridManager gridManager;
+
     private Camera mainCamera;
-    
-    // Здесь можно добавить ссылку на объект подсветки ячейки, если потребуется визуальная индикация
-    // private GameObject cellHighlight;
-    
+    private float heightOffset;
+
     void Start()
     {
+        // 1) Получаем MainCamera
         mainCamera = Camera.main;
+        if (mainCamera == null)
+            Debug.LogError("MainCamera не найдена — проверьте тег у камеры!");
+
+        // 2) Ссылка на GridManager
         if (gridManager == null)
             gridManager = FindObjectOfType<GridManager>();
+
+        // 3) Половина высоты по коллайдеру
+        Collider col = GetComponent<Collider>();
+        if (col != null)
+            heightOffset = col.bounds.extents.y;
+        else
+            heightOffset = 0f;
     }
-    
+
     void Update()
     {
-        // Создаем плоскость на уровне gridOrigin.y
+        // 1) Создаем горизонтальную плоскость на уровне gridOrigin.y
         Plane gridPlane = new Plane(Vector3.up, gridManager.gridOrigin);
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        float distance;
-        
-        if (gridPlane.Raycast(ray, out distance))
+
+        // 2) Raycast
+        if (!gridPlane.Raycast(ray, out float dist))
+            return;
+
+        // 3) Точка попадания
+        Vector3 worldPoint = ray.GetPoint(dist);
+
+        // 4) Координаты ячейки
+        Vector2Int gridPos = gridManager.GetGridPosition(worldPoint);
+
+        // 5) Запрет выхода за границы
+        if (gridPos.x < 0 || gridPos.x >= gridManager.gridWidth ||
+            gridPos.y < 0 || gridPos.y >= gridManager.gridHeight)
         {
-            Vector3 worldPoint = ray.GetPoint(distance);
-            // Определяем, в какой ячейке находится курсор
-            Vector2Int gridPos = gridManager.GetGridPosition(worldPoint);
-            // Находим центр ячейки
-            Vector3 snappedPosition = gridManager.GetWorldPosition(gridPos);
-            transform.position = snappedPosition;
-            
-            // Здесь можно обновить подсветку ячейки, если реализуешь визуальный эффект
-            // UpdateCellHighlight(snappedPosition);
+            // не обновляем позицию
+            return;
         }
-        
-        // При нажатии левой кнопки мыши фиксируем позицию постройки
+
+        // 6) Снаппинг по центру ячейки с учётом высоты
+        Vector3 cellCenter = gridManager.GetWorldPosition(gridPos);
+        transform.position = new Vector3(
+            cellCenter.x,
+            gridManager.gridOrigin.y + heightOffset,
+            cellCenter.z
+        );
+
+        // 7) Фиксация по левому клику
         if (Input.GetMouseButtonDown(0))
         {
-            // Проверяем, свободна ли ячейка (на данном этапе всегда true)
-            if (IsCellFree())
+            if (IsCellFree(gridPos))
             {
-                Destroy(this); // Выключаем режим перетаскивания
-                RemoveCellHighlight();
+                // Завершаем режим drag&drop
+                Destroy(this);
             }
             else
             {
-                Debug.Log("Ячейка занята! Выберите другое место.");
+                Debug.Log("Ячейка " + gridPos + " занята!");
             }
         }
     }
-    
-    // Псевдопроверка – всегда возвращает true. Здесь можно добавить проверку через Physics.OverlapBox или ведение списка занятых ячеек.
-    private bool IsCellFree()
+
+    // Пока заглушка: всегда true. Позже можно использовать Physics.OverlapBox и хранить занятые ячейки.
+    private bool IsCellFree(Vector2Int gridPos)
     {
         return true;
     }
-    
-    private void RemoveCellHighlight()
-    {
-        // Если реализуешь подсветку – удаляй её здесь
-    }
-    
-    // Метод для обновления подсветки ячейки можно добавить здесь (опционально)
-    // private void UpdateCellHighlight(Vector3 position) { ... }
 }
