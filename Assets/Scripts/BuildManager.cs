@@ -1,16 +1,28 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
+
+[System.Serializable]
+public class BuildableData
+{
+    public GameObject prefab;
+    public int sizeX = 1;
+    public int sizeZ = 1;
+}
 
 public class BuildManager : MonoBehaviour
 {
-    [Header("Префабы построек")]
-    public GameObject wallPrefab;
-    public GameObject concreteWallPrefab;
-    public GameObject buildingXPGeneratorPrefab;
-    public GameObject buildingRatushaPrefab;
-    public GameObject buildingSkladPrefab;
-    public GameObject weaponCannonPrefab;
-    public GameObject weaponCrossbowPrefab;
+    [Header("Постройки")]
+    public BuildableData wallData;
+    public BuildableData concreteWallData;
+    public BuildableData buildingXPGeneratorData;
+    public BuildableData buildingRatushaData;
+    public BuildableData buildingSkladData;
+    public BuildableData weaponCannonData;
+    public BuildableData weaponCrossbowData;
+
+    [Header("Вспомогательные объекты")]
+    public GameObject highlightPrefab;
 
     [Header("Слой для сетки")]
     public LayerMask gridLayer;
@@ -18,66 +30,37 @@ public class BuildManager : MonoBehaviour
     [Header("Параметры")]
     public float cellSize = 1f;
 
+    private BuildableData currentData;
     private GameObject previewObject;
     private GameObject currentPrefab;
     private GameObject lastPlacedObject;
+    private List<GameObject> highlightInstances = new List<GameObject>();
+
     private bool isPlacing = false;
     private Quaternion currentRotation = Quaternion.identity;
 
-    // Методы запуска размещения объектов
-    public void StartWallPlacement()
-    {
-        StartPlacing(wallPrefab);
-        Debug.Log("Режим строительства: Частокол");
-    }
+    private HashSet<Vector2Int> occupiedCells = new HashSet<Vector2Int>();
+    private bool canPlace = true;
 
-    public void StartConcreteWallPlacement()
-    {
-        StartPlacing(concreteWallPrefab);
-        Debug.Log("Режим строительства: Бетонный забор");
-    }
+    // Методы запуска
+    public void StartWallPlacement() => StartPlacing(wallData);
+    public void StartConcreteWallPlacement() => StartPlacing(concreteWallData);
+    public void StartXPGeneratorPlacement() => StartPlacing(buildingXPGeneratorData);
+    public void StartRatushaPlacement() => StartPlacing(buildingRatushaData);
+    public void StartSkladPlacement() => StartPlacing(buildingSkladData);
+    public void StartCannonPlacement() => StartPlacing(weaponCannonData);
+    public void StartCrossbowPlacement() => StartPlacing(weaponCrossbowData);
 
-    public void StartXPGeneratorPlacement()
+    private void StartPlacing(BuildableData data)
     {
-        StartPlacing(buildingXPGeneratorPrefab);
-        Debug.Log("Строительство: Генератор опыта");
-    }
-
-    public void StartRatushaPlacement()
-    {
-        StartPlacing(buildingRatushaPrefab);
-        Debug.Log("Строительство: Ратуша");
-    }
-
-    public void StartSkladPlacement()
-    {
-        StartPlacing(buildingSkladPrefab);
-        Debug.Log("Строительство: Склад");
-    }
-
-    public void StartCannonPlacement()
-    {
-        StartPlacing(weaponCannonPrefab);
-        Debug.Log("Строительство: Пушка");
-    }
-
-    public void StartCrossbowPlacement()
-    {
-        StartPlacing(weaponCrossbowPrefab);
-        Debug.Log("Строительство: Арбалет");
-    }
-
-    // Универсальный метод запуска размещения
-    private void StartPlacing(GameObject prefab)
-    {
+        currentData = data;
         isPlacing = true;
         currentRotation = Quaternion.identity;
-        currentPrefab = prefab;
+        currentPrefab = data.prefab;
 
-        if (previewObject != null)
-            Destroy(previewObject);
+        if (previewObject != null) Destroy(previewObject);
 
-        previewObject = Instantiate(prefab);
+        previewObject = Instantiate(currentPrefab);
         previewObject.GetComponent<Collider>().enabled = false;
         SetTransparent(previewObject, true);
     }
@@ -88,35 +71,69 @@ public class BuildManager : MonoBehaviour
             return;
 
         Vector3Int cell = GetMouseCell();
-        if (cell != Vector3Int.one * int.MinValue)
+        if (cell == Vector3Int.one * int.MinValue)
+            return;
+
+        Vector3 centerPos = new Vector3(cell.x, 0, cell.z);
+        List<Vector2Int> checkCells = GetOccupiedCells(centerPos, currentData.sizeX, currentData.sizeZ, currentRotation);
+
+        canPlace = true;
+        foreach (var c in checkCells)
         {
-            float yOffset = currentPrefab.transform.position.y;
-            Vector3 worldPos = new Vector3(cell.x, yOffset, cell.z);
-            previewObject.transform.position = worldPos;
-            previewObject.transform.rotation = currentRotation;
-
-            if (Input.GetMouseButtonDown(1)) // ПКМ
+            if (occupiedCells.Contains(c))
             {
-                currentRotation *= Quaternion.Euler(0, 90, 0);
-                Debug.Log("Поворот на 90 градусов");
+                canPlace = false;
+                break;
+            }
+        }
+
+        // Центр области, с учётом поворота
+        Vector3 worldPos = GetCenterWorldPosition(cell, currentData.sizeX, currentData.sizeZ, currentRotation);
+        worldPos.y = currentPrefab.transform.position.y;
+        previewObject.transform.position = worldPos;
+        previewObject.transform.rotation = currentRotation;
+
+        // Подсветка всех клеток
+        UpdateHighlightVisuals(checkCells, canPlace);
+
+        // Поворот
+        if (Input.GetMouseButtonDown(1))
+        {
+            currentRotation *= Quaternion.Euler(0, 90, 0);
+        }
+
+        // Установка
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+            if (!canPlace)
+            {
+                Debug.Log("Нельзя построить: хотя бы одна клетка занята.");
+                return;
             }
 
-            if (Input.GetMouseButtonDown(0)) // ЛКМ
-            {
-                if (EventSystem.current.IsPointerOverGameObject())
-                    return;
+            lastPlacedObject = Instantiate(currentPrefab, worldPos, currentRotation);
+            foreach (var c in checkCells)
+                occupiedCells.Add(c);
 
-                lastPlacedObject = Instantiate(currentPrefab, worldPos, currentRotation);
-                isPlacing = false;
-                Destroy(previewObject);
-                previewObject = null;
-                currentPrefab = null;
-                Debug.Log("Объект размещён");
-            }
+            EndPlacement();
         }
     }
 
-    // Получение клетки под курсором
+    private void EndPlacement()
+    {
+        isPlacing = false;
+
+        if (previewObject != null) Destroy(previewObject);
+        previewObject = null;
+
+        foreach (var obj in highlightInstances)
+            Destroy(obj);
+        highlightInstances.Clear();
+
+        currentPrefab = null;
+    }
+
     private Vector3Int GetMouseCell()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -126,11 +143,50 @@ public class BuildManager : MonoBehaviour
             float z = Mathf.Round(hit.point.z / cellSize);
             return new Vector3Int((int)x, 0, (int)z);
         }
-
         return Vector3Int.one * int.MinValue;
     }
 
-    // Прозрачность призрака
+    private List<Vector2Int> GetOccupiedCells(Vector3 center, int sizeX, int sizeZ, Quaternion rotation)
+    {
+        List<Vector2Int> cells = new List<Vector2Int>();
+
+        for (int x = 0; x < sizeX; x++)
+        {
+            for (int z = 0; z < sizeZ; z++)
+            {
+                Vector3 offset = new Vector3(x - sizeX / 2 + 0.5f, 0, z - sizeZ / 2 + 0.5f);
+                Vector3 worldOffset = rotation * offset;
+                Vector3 worldPos = center + worldOffset;
+
+                int cellX = Mathf.RoundToInt(worldPos.x);
+                int cellZ = Mathf.RoundToInt(worldPos.z);
+                Vector2Int cell = new Vector2Int(cellX, cellZ);
+
+                if (!cells.Contains(cell))
+                    cells.Add(cell);
+            }
+        }
+
+        return cells;
+    }
+
+    private Vector3 GetCenterWorldPosition(Vector3Int baseCell, int sizeX, int sizeZ, Quaternion rotation)
+    {
+        Vector3 centerOffset = Vector3.zero;
+
+        for (int x = 0; x < sizeX; x++)
+        {
+            for (int z = 0; z < sizeZ; z++)
+            {
+                Vector3 localOffset = new Vector3(x - sizeX / 2 + 0.5f, 0, z - sizeZ / 2 + 0.5f);
+                centerOffset += rotation * localOffset;
+            }
+        }
+
+        centerOffset /= (sizeX * sizeZ);
+        return new Vector3(baseCell.x, 0, baseCell.z) + centerOffset;
+    }
+
     private void SetTransparent(GameObject obj, bool transparent)
     {
         Renderer rend = obj.GetComponent<Renderer>();
@@ -143,25 +199,50 @@ public class BuildManager : MonoBehaviour
         }
     }
 
-    // Отмена строительства (по кнопке)
+    private void UpdateHighlightVisuals(List<Vector2Int> cells, bool isPlaceable)
+    {
+        foreach (var obj in highlightInstances)
+            Destroy(obj);
+        highlightInstances.Clear();
+
+        foreach (var cell in cells)
+        {
+            GameObject highlight = Instantiate(highlightPrefab);
+            highlight.transform.position = new Vector3(cell.x + 0.5f, 0.01f, cell.y + 0.5f);
+            highlight.transform.rotation = Quaternion.Euler(90, 0, 0);
+            SetHighlightColorOnObject(highlight, isPlaceable ? Color.green : Color.red);
+            highlightInstances.Add(highlight);
+        }
+    }
+
+    private void SetHighlightColorOnObject(GameObject obj, Color color)
+    {
+        Renderer rend = obj.GetComponent<Renderer>();
+        if (rend != null)
+        {
+            Color c = color;
+            c.a = 0.5f;
+            rend.material.color = c;
+        }
+    }
+
     public void CancelPlacement()
     {
-        if (previewObject != null)
-        {
-            Destroy(previewObject);
-            previewObject = null;
-        }
-
-        currentPrefab = null;
-        isPlacing = false;
+        EndPlacement();
         Debug.Log("Строительство отменено.");
     }
 
-    // Откат последнего размещения
     public void UndoLastPlacement()
     {
         if (lastPlacedObject != null)
         {
+            Vector3 pos = lastPlacedObject.transform.position;
+            Quaternion rot = lastPlacedObject.transform.rotation;
+            List<Vector2Int> occupied = GetOccupiedCells(pos, currentData.sizeX, currentData.sizeZ, rot);
+
+            foreach (var c in occupied)
+                occupiedCells.Remove(c);
+
             Destroy(lastPlacedObject);
             lastPlacedObject = null;
             Debug.Log("Последнее размещение отменено.");
