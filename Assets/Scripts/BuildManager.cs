@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class BuildManager : MonoBehaviour
 {
@@ -19,10 +20,11 @@ public class BuildManager : MonoBehaviour
 
     private GameObject previewObject;
     private GameObject currentPrefab;
+    private GameObject lastPlacedObject;
     private bool isPlacing = false;
     private Quaternion currentRotation = Quaternion.identity;
 
-    // Методы запуска размещения
+    // Методы запуска размещения объектов
     public void StartWallPlacement()
     {
         StartPlacing(wallPrefab);
@@ -65,7 +67,7 @@ public class BuildManager : MonoBehaviour
         Debug.Log("Строительство: Арбалет");
     }
 
-    // Универсальный метод начала размещения
+    // Универсальный метод запуска размещения
     private void StartPlacing(GameObject prefab)
     {
         isPlacing = true;
@@ -77,7 +79,6 @@ public class BuildManager : MonoBehaviour
 
         previewObject = Instantiate(prefab);
         previewObject.GetComponent<Collider>().enabled = false;
-
         SetTransparent(previewObject, true);
     }
 
@@ -94,15 +95,18 @@ public class BuildManager : MonoBehaviour
             previewObject.transform.position = worldPos;
             previewObject.transform.rotation = currentRotation;
 
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(1)) // ПКМ
             {
                 currentRotation *= Quaternion.Euler(0, 90, 0);
                 Debug.Log("Поворот на 90 градусов");
             }
 
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0)) // ЛКМ
             {
-                Instantiate(currentPrefab, worldPos, currentRotation);
+                if (EventSystem.current.IsPointerOverGameObject())
+                    return;
+
+                lastPlacedObject = Instantiate(currentPrefab, worldPos, currentRotation);
                 isPlacing = false;
                 Destroy(previewObject);
                 previewObject = null;
@@ -112,6 +116,7 @@ public class BuildManager : MonoBehaviour
         }
     }
 
+    // Получение клетки под курсором
     private Vector3Int GetMouseCell()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -125,6 +130,7 @@ public class BuildManager : MonoBehaviour
         return Vector3Int.one * int.MinValue;
     }
 
+    // Прозрачность призрака
     private void SetTransparent(GameObject obj, bool transparent)
     {
         Renderer rend = obj.GetComponent<Renderer>();
@@ -134,6 +140,31 @@ public class BuildManager : MonoBehaviour
             Color color = mat.color;
             color.a = transparent ? 0.5f : 1f;
             mat.color = color;
+        }
+    }
+
+    // Отмена строительства (по кнопке)
+    public void CancelPlacement()
+    {
+        if (previewObject != null)
+        {
+            Destroy(previewObject);
+            previewObject = null;
+        }
+
+        currentPrefab = null;
+        isPlacing = false;
+        Debug.Log("Строительство отменено.");
+    }
+
+    // Откат последнего размещения
+    public void UndoLastPlacement()
+    {
+        if (lastPlacedObject != null)
+        {
+            Destroy(lastPlacedObject);
+            lastPlacedObject = null;
+            Debug.Log("Последнее размещение отменено.");
         }
     }
 }
