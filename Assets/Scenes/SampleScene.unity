@@ -362,7 +362,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 566795008}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 941272305}
+        m_TargetAssemblyTypeName: BuildManager, Assembly-CSharp
+        m_MethodName: StartCrossbowPlacement
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &566795008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -656,7 +668,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 873021793}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 941272305}
+        m_TargetAssemblyTypeName: BuildManager, Assembly-CSharp
+        m_MethodName: StartConcreteWallPlacement
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &873021793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -799,6 +823,61 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
+--- !u!1 &941272304
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 941272306}
+  - component: {fileID: 941272305}
+  m_Layer: 0
+  m_Name: BuildManagerObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &941272305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 941272304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e24c5ab39c992f345ab5d0e99758fee3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wallPrefab: {fileID: 4252178595197545656, guid: 2644236b1a68f834eb75edacaff723c7, type: 3}
+  concreteWallPrefab: {fileID: 3600789205380977841, guid: 278dece961e5efc4e8e97e94996f49a2, type: 3}
+  buildingXPGeneratorPrefab: {fileID: 6701993726779014238, guid: 04d9f5e552de9f945a83ca82709708d2, type: 3}
+  buildingRatushaPrefab: {fileID: 2856051434009249281, guid: 8dc256cfd7439954c8956ab293904253, type: 3}
+  buildingSkladPrefab: {fileID: 8264722422439249072, guid: 9cbfe9bbcbe8f0641977ce9cd16a2d1e, type: 3}
+  weaponCannonPrefab: {fileID: 3021567495109936401, guid: 13aeab47de0447a4cadff29897985126, type: 3}
+  weaponCrossbowPrefab: {fileID: 1950169793290186125, guid: fac78599348b465449440b65b1f7752b, type: 3}
+  gridLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  cellSize: 1
+--- !u!4 &941272306
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 941272304}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.27497208, y: 0.9343718, z: -0.73221356}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1052820577
 GameObject:
   m_ObjectHideFlags: 0
@@ -1064,7 +1143,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1079753085}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 941272305}
+        m_TargetAssemblyTypeName: BuildManager, Assembly-CSharp
+        m_MethodName: StartSkladPlacement
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1079753085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1185,7 +1276,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1086937249}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 941272305}
+        m_TargetAssemblyTypeName: BuildManager, Assembly-CSharp
+        m_MethodName: StartCannonPlacement
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1086937249
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1439,7 +1542,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1182133402}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 941272305}
+        m_TargetAssemblyTypeName: BuildManager, Assembly-CSharp
+        m_MethodName: StartWallPlacement
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1182133402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1648,7 +1763,7 @@ GameObject:
   - component: {fileID: 1271705260}
   - component: {fileID: 1271705259}
   - component: {fileID: 1271705258}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2104,7 +2219,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1449101627}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 941272305}
+        m_TargetAssemblyTypeName: BuildManager, Assembly-CSharp
+        m_MethodName: StartXPGeneratorPlacement
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1449101627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2803,10 +2930,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a83bdbc46fe333249816e52d57b4e200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panSpeed: 50
+  panSpeed: 40
   panLimit: {x: 50, y: 50}
   scrollSpeed: 20
-  minY: 10
+  minY: 3
   maxY: 100
   rotationSpeed: 100
   minVerticalAngle: 10
@@ -3536,7 +3663,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2035184041}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 941272305}
+        m_TargetAssemblyTypeName: BuildManager, Assembly-CSharp
+        m_MethodName: StartRatushaPlacement
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2035184041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3783,3 +3922,4 @@ SceneRoots:
   - {fileID: 2078425595}
   - {fileID: 1683510856}
   - {fileID: 1347204988}
+  - {fileID: 941272306}
