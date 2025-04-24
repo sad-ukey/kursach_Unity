@@ -10,6 +10,18 @@ public class BuildableData
     public int sizeZ = 1;
 }
 
+public class PlacedStructure
+{
+    public GameObject obj;
+    public List<Vector2Int> occupiedCells;
+
+    public PlacedStructure(GameObject o, List<Vector2Int> cells)
+    {
+        obj = o;
+        occupiedCells = cells;
+    }
+}
+
 public class BuildManager : MonoBehaviour
 {
     [Header("Постройки")]
@@ -33,13 +45,13 @@ public class BuildManager : MonoBehaviour
     private BuildableData currentData;
     private GameObject previewObject;
     private GameObject currentPrefab;
-    private GameObject lastPlacedObject;
     private List<GameObject> highlightInstances = new List<GameObject>();
 
     private bool isPlacing = false;
     private Quaternion currentRotation = Quaternion.identity;
 
     private HashSet<Vector2Int> occupiedCells = new HashSet<Vector2Int>();
+    private Stack<PlacedStructure> placedObjects = new Stack<PlacedStructure>();
     private bool canPlace = true;
 
     // Методы запуска
@@ -87,13 +99,13 @@ public class BuildManager : MonoBehaviour
             }
         }
 
-        // Центр области, с учётом поворота
+        // Центр объекта
         Vector3 worldPos = GetCenterWorldPosition(cell, currentData.sizeX, currentData.sizeZ, currentRotation);
         worldPos.y = currentPrefab.transform.position.y;
+
         previewObject.transform.position = worldPos;
         previewObject.transform.rotation = currentRotation;
 
-        // Подсветка всех клеток
         UpdateHighlightVisuals(checkCells, canPlace);
 
         // Поворот
@@ -108,14 +120,15 @@ public class BuildManager : MonoBehaviour
             if (EventSystem.current.IsPointerOverGameObject()) return;
             if (!canPlace)
             {
-                Debug.Log("Нельзя построить: хотя бы одна клетка занята.");
+                Debug.Log("Нельзя строить: хотя бы одна клетка занята.");
                 return;
             }
 
-            lastPlacedObject = Instantiate(currentPrefab, worldPos, currentRotation);
+            GameObject placed = Instantiate(currentPrefab, worldPos, currentRotation);
             foreach (var c in checkCells)
                 occupiedCells.Add(c);
 
+            placedObjects.Push(new PlacedStructure(placed, checkCells));
             EndPlacement();
         }
     }
@@ -234,18 +247,17 @@ public class BuildManager : MonoBehaviour
 
     public void UndoLastPlacement()
     {
-        if (lastPlacedObject != null)
+        if (placedObjects.Count == 0)
         {
-            Vector3 pos = lastPlacedObject.transform.position;
-            Quaternion rot = lastPlacedObject.transform.rotation;
-            List<Vector2Int> occupied = GetOccupiedCells(pos, currentData.sizeX, currentData.sizeZ, rot);
-
-            foreach (var c in occupied)
-                occupiedCells.Remove(c);
-
-            Destroy(lastPlacedObject);
-            lastPlacedObject = null;
-            Debug.Log("Последнее размещение отменено.");
+            Debug.Log("Нет объектов для отката.");
+            return;
         }
+
+        PlacedStructure last = placedObjects.Pop();
+        foreach (var c in last.occupiedCells)
+            occupiedCells.Remove(c);
+
+        Destroy(last.obj);
+        Debug.Log("Откат последнего действия.");
     }
 }
