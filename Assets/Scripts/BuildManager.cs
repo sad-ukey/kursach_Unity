@@ -2,14 +2,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
-[System.Serializable]
-public class BuildableData
-{
-    public GameObject prefab;
-    public int sizeX = 1;
-    public int sizeZ = 1;
-}
-
 public class PlacedStructure
 {
     public GameObject obj;
@@ -47,6 +39,7 @@ public class BuildManager : MonoBehaviour
     private Stack<PlacedStructure> placedObjects = new Stack<PlacedStructure>();
     private List<GameObject> highlightInstances = new List<GameObject>();
     private HashSet<Vector2Int> occupiedCells = new HashSet<Vector2Int>();
+    private List<GameObject> allPlacedObjects = new List<GameObject>();
     private bool isPlacing = false;
 
     public void StartWallPlacement() => StartPlacing(wallData);
@@ -112,6 +105,7 @@ public class BuildManager : MonoBehaviour
                 occupiedCells.Add(pos);
 
             placedObjects.Push(new PlacedStructure(placed));
+            allPlacedObjects.Add(placed);
             EndPlacement();
         }
     }
@@ -185,7 +179,7 @@ public class BuildManager : MonoBehaviour
             Destroy(obj);
         highlightInstances.Clear();
 
-        foreach (var cellPos in cells) // <--- переименовано здесь
+        foreach (var cellPos in cells)
         {
             GameObject highlight = Instantiate(highlightPrefab);
             highlight.transform.position = new Vector3(cellPos.x + 0.5f, 0.01f, cellPos.y + 0.5f);
@@ -234,6 +228,7 @@ public class BuildManager : MonoBehaviour
 
         PlacedStructure last = placedObjects.Pop();
         Destroy(last.obj);
+        allPlacedObjects.Remove(last.obj);
         Debug.Log("Откат последнего действия.");
     }
 
@@ -250,5 +245,60 @@ public class BuildManager : MonoBehaviour
         highlightInstances.Clear();
 
         currentPrefab = null;
+    }
+
+    public void SaveGame()
+    {
+        SaveData save = new SaveData();
+
+        foreach (var obj in allPlacedObjects)
+        {
+            var size = obj.GetComponent<BuildableSize>();
+            if (size == null) continue;
+
+            save.placedObjects.Add(new PlacedObjectData
+            {
+                prefabName = obj.name.Replace("(Clone)", "").Trim(),
+                position = obj.transform.position,
+                rotation = obj.transform.rotation,
+                sizeX = size.sizeX,
+                sizeZ = size.sizeZ
+            });
+        }
+
+        SaveSystem.Save(save);
+    }
+
+    public void LoadGame()
+    {
+        SaveData save = SaveSystem.Load();
+
+        foreach (var data in save.placedObjects)
+        {
+            GameObject prefab = GetPrefabByName(data.prefabName);
+            if (prefab != null)
+            {
+                GameObject placed = Instantiate(prefab, data.position, data.rotation);
+                allPlacedObjects.Add(placed);
+
+                List<Vector2Int> cells = GetOccupiedCells(data.position, data.sizeX, data.sizeZ, data.rotation);
+                foreach (var cell in cells)
+                    occupiedCells.Add(cell);
+            }
+        }
+
+        Debug.Log("Игра загружена.");
+    }
+
+    private GameObject GetPrefabByName(string name)
+    {
+        if (name == wallData.prefab.name) return wallData.prefab;
+        if (name == concreteWallData.prefab.name) return concreteWallData.prefab;
+        if (name == buildingXPGeneratorData.prefab.name) return buildingXPGeneratorData.prefab;
+        if (name == buildingRatushaData.prefab.name) return buildingRatushaData.prefab;
+        if (name == buildingSkladData.prefab.name) return buildingSkladData.prefab;
+        if (name == weaponCannonData.prefab.name) return weaponCannonData.prefab;
+        if (name == weaponCrossbowData.prefab.name) return weaponCrossbowData.prefab;
+        return null;
     }
 }

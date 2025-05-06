@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3224886946736017339}
   - component: {fileID: 8057346140088868744}
   - component: {fileID: 6085820729633727447}
+  - component: {fileID: 6184481886183125813}
   m_Layer: 0
   m_Name: Building_Sklad
   m_TagString: Untagged
@@ -105,3 +106,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6184481886183125813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8264722422439249072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af4f136b7f6b8154f8e3b6a5c89d49f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sizeX: 2
+  sizeZ: 2
