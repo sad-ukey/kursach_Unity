@@ -13,12 +13,10 @@ public class BuildableData
 public class PlacedStructure
 {
     public GameObject obj;
-    public List<Vector2Int> occupiedCells;
 
-    public PlacedStructure(GameObject o, List<Vector2Int> cells)
+    public PlacedStructure(GameObject o)
     {
         obj = o;
-        occupiedCells = cells;
     }
 }
 
@@ -45,16 +43,12 @@ public class BuildManager : MonoBehaviour
     private BuildableData currentData;
     private GameObject previewObject;
     private GameObject currentPrefab;
-    private List<GameObject> highlightInstances = new List<GameObject>();
-
-    private bool isPlacing = false;
     private Quaternion currentRotation = Quaternion.identity;
-
-    private HashSet<Vector2Int> occupiedCells = new HashSet<Vector2Int>();
     private Stack<PlacedStructure> placedObjects = new Stack<PlacedStructure>();
-    private bool canPlace = true;
+    private List<GameObject> highlightInstances = new List<GameObject>();
+    private HashSet<Vector2Int> occupiedCells = new HashSet<Vector2Int>();
+    private bool isPlacing = false;
 
-    // Методы запуска
     public void StartWallPlacement() => StartPlacing(wallData);
     public void StartConcreteWallPlacement() => StartPlacing(concreteWallData);
     public void StartXPGeneratorPlacement() => StartPlacing(buildingXPGeneratorData);
@@ -66,11 +60,12 @@ public class BuildManager : MonoBehaviour
     private void StartPlacing(BuildableData data)
     {
         currentData = data;
+        currentPrefab = data.prefab;
         isPlacing = true;
         currentRotation = Quaternion.identity;
-        currentPrefab = data.prefab;
 
-        if (previewObject != null) Destroy(previewObject);
+        if (previewObject != null)
+            Destroy(previewObject);
 
         previewObject = Instantiate(currentPrefab);
         previewObject.GetComponent<Collider>().enabled = false;
@@ -86,65 +81,39 @@ public class BuildManager : MonoBehaviour
         if (cell == Vector3Int.one * int.MinValue)
             return;
 
-        Vector3 centerPos = new Vector3(cell.x, 0, cell.z);
-        List<Vector2Int> checkCells = GetOccupiedCells(centerPos, currentData.sizeX, currentData.sizeZ, currentRotation);
-
-        canPlace = true;
-        foreach (var c in checkCells)
-        {
-            if (occupiedCells.Contains(c))
-            {
-                canPlace = false;
-                break;
-            }
-        }
-
-        // Центр объекта
         Vector3 worldPos = GetCenterWorldPosition(cell, currentData.sizeX, currentData.sizeZ, currentRotation);
         worldPos.y = currentPrefab.transform.position.y;
 
         previewObject.transform.position = worldPos;
         previewObject.transform.rotation = currentRotation;
 
-        UpdateHighlightVisuals(checkCells, canPlace);
+        List<Vector2Int> highlightCells = GetOccupiedCells(worldPos, currentData.sizeX, currentData.sizeZ, currentRotation);
+        bool canPlace = CanPlaceAt(highlightCells);
+        UpdateHighlightVisuals(highlightCells, canPlace);
 
-        // Поворот
         if (Input.GetMouseButtonDown(1))
         {
             currentRotation *= Quaternion.Euler(0, 90, 0);
         }
 
-        // Установка
         if (Input.GetMouseButtonDown(0))
         {
-            if (EventSystem.current.IsPointerOverGameObject()) return;
+            if (EventSystem.current.IsPointerOverGameObject())
+                return;
+
             if (!canPlace)
             {
-                Debug.Log("Нельзя строить: хотя бы одна клетка занята.");
+                Debug.Log("Нельзя строить: есть занятые клетки.");
                 return;
             }
 
             GameObject placed = Instantiate(currentPrefab, worldPos, currentRotation);
-            foreach (var c in checkCells)
-                occupiedCells.Add(c);
+            foreach (var pos in highlightCells)
+                occupiedCells.Add(pos);
 
-            placedObjects.Push(new PlacedStructure(placed, checkCells));
+            placedObjects.Push(new PlacedStructure(placed));
             EndPlacement();
         }
-    }
-
-    private void EndPlacement()
-    {
-        isPlacing = false;
-
-        if (previewObject != null) Destroy(previewObject);
-        previewObject = null;
-
-        foreach (var obj in highlightInstances)
-            Destroy(obj);
-        highlightInstances.Clear();
-
-        currentPrefab = null;
     }
 
     private Vector3Int GetMouseCell()
@@ -157,30 +126,6 @@ public class BuildManager : MonoBehaviour
             return new Vector3Int((int)x, 0, (int)z);
         }
         return Vector3Int.one * int.MinValue;
-    }
-
-    private List<Vector2Int> GetOccupiedCells(Vector3 center, int sizeX, int sizeZ, Quaternion rotation)
-    {
-        List<Vector2Int> cells = new List<Vector2Int>();
-
-        for (int x = 0; x < sizeX; x++)
-        {
-            for (int z = 0; z < sizeZ; z++)
-            {
-                Vector3 offset = new Vector3(x - sizeX / 2 + 0.5f, 0, z - sizeZ / 2 + 0.5f);
-                Vector3 worldOffset = rotation * offset;
-                Vector3 worldPos = center + worldOffset;
-
-                int cellX = Mathf.RoundToInt(worldPos.x);
-                int cellZ = Mathf.RoundToInt(worldPos.z);
-                Vector2Int cell = new Vector2Int(cellX, cellZ);
-
-                if (!cells.Contains(cell))
-                    cells.Add(cell);
-            }
-        }
-
-        return cells;
     }
 
     private Vector3 GetCenterWorldPosition(Vector3Int baseCell, int sizeX, int sizeZ, Quaternion rotation)
@@ -200,16 +145,38 @@ public class BuildManager : MonoBehaviour
         return new Vector3(baseCell.x, 0, baseCell.z) + centerOffset;
     }
 
-    private void SetTransparent(GameObject obj, bool transparent)
+    private List<Vector2Int> GetOccupiedCells(Vector3 center, int sizeX, int sizeZ, Quaternion rotation)
     {
-        Renderer rend = obj.GetComponent<Renderer>();
-        if (rend != null)
+        List<Vector2Int> cells = new List<Vector2Int>();
+
+        for (int x = 0; x < sizeX; x++)
         {
-            Material mat = rend.material;
-            Color color = mat.color;
-            color.a = transparent ? 0.5f : 1f;
-            mat.color = color;
+            for (int z = 0; z < sizeZ; z++)
+            {
+                Vector3 offset = new Vector3(x - sizeX / 2 + 0.5f, 0, z - sizeZ / 2 + 0.5f);
+                Vector3 worldOffset = rotation * offset;
+                Vector3 worldPos = center + worldOffset;
+
+                int cellX = Mathf.RoundToInt(worldPos.x);
+                int cellZ = Mathf.RoundToInt(worldPos.z);
+                Vector2Int gridCell = new Vector2Int(cellX, cellZ);
+
+                if (!cells.Contains(gridCell))
+                    cells.Add(gridCell);
+            }
         }
+
+        return cells;
+    }
+
+    private bool CanPlaceAt(List<Vector2Int> cellsToCheck)
+    {
+        foreach (var pos in cellsToCheck)
+        {
+            if (occupiedCells.Contains(pos))
+                return false;
+        }
+        return true;
     }
 
     private void UpdateHighlightVisuals(List<Vector2Int> cells, bool isPlaceable)
@@ -218,10 +185,10 @@ public class BuildManager : MonoBehaviour
             Destroy(obj);
         highlightInstances.Clear();
 
-        foreach (var cell in cells)
+        foreach (var cellPos in cells) // <--- переименовано здесь
         {
             GameObject highlight = Instantiate(highlightPrefab);
-            highlight.transform.position = new Vector3(cell.x + 0.5f, 0.01f, cell.y + 0.5f);
+            highlight.transform.position = new Vector3(cellPos.x + 0.5f, 0.01f, cellPos.y + 0.5f);
             highlight.transform.rotation = Quaternion.Euler(90, 0, 0);
             SetHighlightColorOnObject(highlight, isPlaceable ? Color.green : Color.red);
             highlightInstances.Add(highlight);
@@ -236,6 +203,18 @@ public class BuildManager : MonoBehaviour
             Color c = color;
             c.a = 0.5f;
             rend.material.color = c;
+        }
+    }
+
+    private void SetTransparent(GameObject obj, bool transparent)
+    {
+        Renderer rend = obj.GetComponent<Renderer>();
+        if (rend != null)
+        {
+            Material mat = rend.material;
+            Color color = mat.color;
+            color.a = transparent ? 0.5f : 1f;
+            mat.color = color;
         }
     }
 
@@ -254,10 +233,22 @@ public class BuildManager : MonoBehaviour
         }
 
         PlacedStructure last = placedObjects.Pop();
-        foreach (var c in last.occupiedCells)
-            occupiedCells.Remove(c);
-
         Destroy(last.obj);
         Debug.Log("Откат последнего действия.");
+    }
+
+    private void EndPlacement()
+    {
+        isPlacing = false;
+
+        if (previewObject != null)
+            Destroy(previewObject);
+        previewObject = null;
+
+        foreach (var obj in highlightInstances)
+            Destroy(obj);
+        highlightInstances.Clear();
+
+        currentPrefab = null;
     }
 }
