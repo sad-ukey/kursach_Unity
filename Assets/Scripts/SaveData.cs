@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
+[System.Serializable]
 public class PlacedObjectData
 {
     public string prefabName;
@@ -12,9 +11,9 @@ public class PlacedObjectData
     public int sizeZ;
 }
 
-[Serializable]
+[System.Serializable]
 public class SaveData
 {
+    public int savedMoney = 0;
     public List<PlacedObjectData> placedObjects = new List<PlacedObjectData>();
-    public int currency = 0; // можно расширять
 }

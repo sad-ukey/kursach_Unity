@@ -100,6 +100,14 @@ public class BuildManager : MonoBehaviour
                 return;
             }
 
+            if (!CurrencyManager.Instance.HasEnough(currentData.cost))
+            {
+                Debug.Log("Недостаточно рублей для строительства.");
+                return;
+            }
+
+            CurrencyManager.Instance.Spend(currentData.cost);
+
             GameObject placed = Instantiate(currentPrefab, worldPos, currentRotation);
             foreach (var pos in highlightCells)
                 occupiedCells.Add(pos);
@@ -250,6 +258,7 @@ public class BuildManager : MonoBehaviour
     public void SaveGame()
     {
         SaveData save = new SaveData();
+        save.savedMoney = CurrencyManager.Instance.GetCurrentMoney();
 
         foreach (var obj in allPlacedObjects)
         {
@@ -272,6 +281,8 @@ public class BuildManager : MonoBehaviour
     public void LoadGame()
     {
         SaveData save = SaveSystem.Load();
+
+        CurrencyManager.Instance.LoadMoney(save.savedMoney);
 
         foreach (var data in save.placedObjects)
         {
