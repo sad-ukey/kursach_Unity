@@ -41,6 +41,7 @@ public class BuildManager : MonoBehaviour
     private HashSet<Vector2Int> occupiedCells = new HashSet<Vector2Int>();
     private List<GameObject> allPlacedObjects = new List<GameObject>();
     private bool isPlacing = false;
+    private bool ratushaBuilt = false;
 
     public void StartWallPlacement() => StartPlacing(wallData);
     public void StartConcreteWallPlacement() => StartPlacing(concreteWallData);
@@ -50,8 +51,37 @@ public class BuildManager : MonoBehaviour
     public void StartCannonPlacement() => StartPlacing(weaponCannonData);
     public void StartCrossbowPlacement() => StartPlacing(weaponCrossbowData);
 
+    public bool CanCurrentlyPlace()
+    {
+        // Если размещается ратуша — всегда можно
+        if (currentData == buildingRatushaData)
+            return true;
+
+        // Остальные здания — только если ратуша уже есть
+        return ratushaBuilt;
+    }
+
+    public bool IsRatushaBuilt()
+    {
+        return ratushaBuilt;
+    }
+
     private void StartPlacing(BuildableData data)
     {
+        // Блокируем повторную постройку ратуши
+        if (data == buildingRatushaData && ratushaBuilt)
+        {
+            Debug.Log("Ратуша уже построена. Нельзя построить вторую.");
+            return;
+        }
+
+        // Блокируем попытку построить всё, кроме ратуши, до её постройки
+        if (!ratushaBuilt && data != buildingRatushaData)
+        {
+            Debug.Log("Сначала постройте ратушу.");
+            return;
+        }
+
         currentData = data;
         currentPrefab = data.prefab;
         isPlacing = true;
@@ -114,6 +144,19 @@ public class BuildManager : MonoBehaviour
 
             placedObjects.Push(new PlacedStructure(placed));
             allPlacedObjects.Add(placed);
+
+            if (currentData == buildingRatushaData)
+            {
+                ratushaBuilt = true;
+                Debug.Log("Ратуша построена. Доступны остальные постройки.");
+
+                SidebarController sidebar = FindObjectOfType<SidebarController>();
+                if (sidebar != null)
+                {
+                    sidebar.UpdateBuildingButtons();
+                }
+            }
+
             EndPlacement();
         }
     }

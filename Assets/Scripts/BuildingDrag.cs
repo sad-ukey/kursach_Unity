@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 public class BuildingDrag : MonoBehaviour
 {
     [Tooltip("Ссылка на GridManager, можно не указывать — найдём автоматически")]
@@ -7,6 +8,7 @@ public class BuildingDrag : MonoBehaviour
 
     private Camera mainCamera;
     private float heightOffset;
+    private BuildManager buildManager;
 
     void Start()
     {
@@ -25,6 +27,8 @@ public class BuildingDrag : MonoBehaviour
             heightOffset = col.bounds.extents.y;
         else
             heightOffset = 0f;
+
+        buildManager = FindObjectOfType<BuildManager>();
     }
 
     void Update()
@@ -60,8 +64,16 @@ public class BuildingDrag : MonoBehaviour
         );
 
         // 7) Фиксация по левому клику
+
+
         if (Input.GetMouseButtonDown(0))
         {
+            if (!buildManager.CanCurrentlyPlace())
+            {
+                Debug.Log("Постройка недоступна: требуется сначала построить ратушу.");
+                return;
+            }
+
             if (IsCellFree(gridPos))
             {
                 // Завершаем режим drag&drop
