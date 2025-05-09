@@ -42,7 +42,7 @@ public class BuildManager : MonoBehaviour
     private List<GameObject> allPlacedObjects = new List<GameObject>();
     private bool isPlacing = false;
     private bool ratushaBuilt = false;
-
+    private Dictionary<BuildableData, int> buildCounts = new Dictionary<BuildableData, int>();
     public void StartWallPlacement() => StartPlacing(wallData);
     public void StartConcreteWallPlacement() => StartPlacing(concreteWallData);
     public void StartXPGeneratorPlacement() => StartPlacing(buildingXPGeneratorData);
@@ -79,6 +79,13 @@ public class BuildManager : MonoBehaviour
         if (!ratushaBuilt && data != buildingRatushaData)
         {
             Debug.Log("Сначала постройте ратушу.");
+            return;
+        }
+
+        // Проверка лимита
+        if (data.buildLimit > 0 && buildCounts.TryGetValue(data, out int count) && count >= data.buildLimit)
+        {
+            Debug.Log($"Превышен лимит построек для {data.prefab.name}. Максимум: {data.buildLimit}");
             return;
         }
 
@@ -144,6 +151,11 @@ public class BuildManager : MonoBehaviour
 
             placedObjects.Push(new PlacedStructure(placed));
             allPlacedObjects.Add(placed);
+
+            //счетчик
+            if (!buildCounts.ContainsKey(currentData))
+                buildCounts[currentData] = 0;
+            buildCounts[currentData]++;
 
             if (currentData == buildingRatushaData)
             {
@@ -280,6 +292,11 @@ public class BuildManager : MonoBehaviour
         PlacedStructure last = placedObjects.Pop();
         Destroy(last.obj);
         allPlacedObjects.Remove(last.obj);
+
+        BuildableData data = GetBuildableDataByPrefab(last.obj.name.Replace("(Clone)", "").Trim());
+        if (data != null && buildCounts.ContainsKey(data))
+            buildCounts[data] = Mathf.Max(0, buildCounts[data] - 1);
+
         Debug.Log("Откат последнего действия.");
     }
 
@@ -318,6 +335,8 @@ public class BuildManager : MonoBehaviour
             });
         }
 
+        save.isRatushaBuilt = ratushaBuilt;
+
         SaveSystem.Save(save);
     }
 
@@ -326,6 +345,8 @@ public class BuildManager : MonoBehaviour
         SaveData save = SaveSystem.Load();
 
         CurrencyManager.Instance.LoadMoney(save.savedMoney);
+
+        buildCounts.Clear();
 
         foreach (var data in save.placedObjects)
         {
@@ -341,6 +362,8 @@ public class BuildManager : MonoBehaviour
             }
         }
 
+        ratushaBuilt = save.isRatushaBuilt;
+
         Debug.Log("Игра загружена.");
     }
 
@@ -353,6 +376,18 @@ public class BuildManager : MonoBehaviour
         if (name == buildingSkladData.prefab.name) return buildingSkladData.prefab;
         if (name == weaponCannonData.prefab.name) return weaponCannonData.prefab;
         if (name == weaponCrossbowData.prefab.name) return weaponCrossbowData.prefab;
+        return null;
+    }
+
+    private BuildableData GetBuildableDataByPrefab(string prefabName)
+    {
+        if (prefabName == wallData.prefab.name) return wallData;
+        if (prefabName == concreteWallData.prefab.name) return concreteWallData;
+        if (prefabName == buildingXPGeneratorData.prefab.name) return buildingXPGeneratorData;
+        if (prefabName == buildingRatushaData.prefab.name) return buildingRatushaData;
+        if (prefabName == buildingSkladData.prefab.name) return buildingSkladData;
+        if (prefabName == weaponCannonData.prefab.name) return weaponCannonData;
+        if (prefabName == weaponCrossbowData.prefab.name) return weaponCrossbowData;
         return null;
     }
 }

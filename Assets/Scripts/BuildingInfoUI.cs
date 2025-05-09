@@ -21,9 +21,9 @@ public class BuildingInfoUI : MonoBehaviour
     public void ShowInfo(BuildingInfo info)
     {
         titleText.text = info.buildingName;
-        levelText.text = info.buildingLevel;
-        healthText.text = info.buildingHealth;
-        typeText.text = info.buildingType;
+        levelText.text = "Уровень: " + info.buildingLevel;
+        healthText.text = "Здоровье: " + info.buildingHealth;
+        typeText.text = "Тип: " + info.buildingType;
         descriptionText.text = info.description;
 
         panel.SetActive(true);
@@ -32,5 +32,6 @@ public class BuildingInfoUI : MonoBehaviour
     public void Close()
     {
         panel.SetActive(false);
+        Debug.Log("Закрытие панели");
     }
 }
