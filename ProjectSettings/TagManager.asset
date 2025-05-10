@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Wall
   - Fence
+  - Defend
   layers:
   - Default
   - TransparentFX
