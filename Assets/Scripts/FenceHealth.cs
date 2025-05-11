@@ -1,21 +1,67 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-// FenceHealth.cs
-using UnityEngine;
-
-public class FenceHealth : MonoBehaviour
+public class FenceHealth : Building
 {
-    public float health = 100f;
+    [Header("Настройки забора")]
+    public float baseHealth = 100f;
+    public GameObject destroyEffect;
 
-    public void TakeDamage(float damage)
+    [Header("Блокировка пути")]
+    public bool alwaysBlocking = false;
+    public float checkRadius = 5f;
+
+    private void Start()
     {
-        health -= damage;
-        if (health <= 0)
+        type = BuildingType.Fence;
+        health = baseHealth;
+    }
+
+    // Теперь override работает корректно
+    public override void TakeDamage(float damage)
+    {
+        base.TakeDamage(damage); // Вызываем базовую логику
+
+        if (health <= 0 && destroyEffect != null)
         {
-            Destroy(gameObject); // Можно добавить разрушение с анимацией
+            Instantiate(destroyEffect, transform.position, Quaternion.identity);
+        }
+    }
+
+    private void Update()
+    {
+        if (!alwaysBlocking)
+        {
+            isBlockingPath = CheckIfBlockingPath();
+        }
+    }
+
+    private bool CheckIfBlockingPath()
+    {
+        Collider[] buildingsBehind = Physics.OverlapSphere(
+            transform.position + transform.forward * checkRadius,
+            checkRadius
+        );
+
+        foreach (var building in buildingsBehind)
+        {
+            Building b = building.GetComponent<Building>();
+            if (b != null && b.type != BuildingType.Fence && b.health > 0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (!alwaysBlocking)
+        {
+            Gizmos.color = isBlockingPath ? Color.red : Color.yellow;
+            Gizmos.DrawWireSphere(
+                transform.position + transform.forward * checkRadius,
+                checkRadius
+            );
         }
     }
 }
-
