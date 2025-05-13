@@ -1,23 +1,29 @@
 using UnityEngine;
-using System.Collections;
+using UnityEngine.AI;
 
-public class DragonAI : MonoBehaviour
+[RequireComponent(typeof(NavMeshAgent))]
+public class DragonAI : MonoBehaviour, damageable
 {
-    [Header("Характеристики Дракона")]
-    public float moveSpeed = 5f;
-    public float health = 300f;
-    public float attackDamage = 25f;
-    public float attackDelay = 2.5f;
-    public float attackRange = 2f;
-    public float flightHeight = 10f;
+    public float moveSpeed = 6f;
+    public float health = 100f;
+    public float attackDamage = 30f;
 
+    private NavMeshAgent agent;
     private Transform currentTarget;
-    private bool isAttacking = false;
 
     void Start()
     {
+        agent = GetComponent<NavMeshAgent>();
+        agent.speed = moveSpeed;
+
+        if (!agent.isOnNavMesh)
+        {
+            Debug.LogError("Дракон не находится на NavMesh!");
+            enabled = false;
+            return;
+        }
+
         FindTarget();
-        SetFlightHeight();
     }
 
     void Update()
@@ -28,87 +34,69 @@ public class DragonAI : MonoBehaviour
             return;
         }
 
-        SetFlightHeight();
-
-        float distance = Vector3.Distance(transform.position, currentTarget.position);
-
-        if (distance > attackRange)
+        if (agent == null || !agent.isOnNavMesh)
         {
-            MoveToTarget();
+            Debug.LogWarning("NavMeshAgent не готов или дракон не стоит на NavMesh");
+            return;
         }
-        else
+
+        agent.SetDestination(currentTarget.position);
+
+        if (Vector3.Distance(transform.position, currentTarget.position) <= 5f)
         {
-            if (!isAttacking)
-            {
-                StartCoroutine(AttackRoutine());
-            }
+            Attack();
         }
-    }
-
-    void SetFlightHeight()
-    {
-        Vector3 pos = transform.position;
-        transform.position = new Vector3(pos.x, flightHeight, pos.z);
-    }
-
-    void MoveToTarget()
-    {
-        Vector3 direction = (currentTarget.position - transform.position).normalized;
-        direction.y = 0; // Исключаем вертикальное движение
-        transform.position += direction * moveSpeed * Time.deltaTime;
-
-        // Поворачиваемся к цели
-        transform.forward = direction;
     }
 
     void FindTarget()
     {
-        Building[] buildings = FindObjectsOfType<Building>();
+        Building[] buildings = GameObject.FindObjectsOfType<Building>();
         float closestDistance = Mathf.Infinity;
-        Building bestTarget = null;
+        Transform closest = null;
 
         foreach (var building in buildings)
         {
-            if (building.type == Building.BuildingType.Fence) continue; // Игнорируем забор
+            if (building.type == Building.BuildingType.Fence) continue;
 
-            float distance = Vector3.Distance(transform.position, building.transform.position);
-            if (distance < closestDistance)
+            float dist = Vector3.Distance(transform.position, building.transform.position);
+            if (dist < closestDistance)
             {
-                closestDistance = distance;
-                bestTarget = building;
+                closestDistance = dist;
+                closest = building.transform;
             }
         }
 
-        if (bestTarget != null)
+        currentTarget = closest;
+
+        if (currentTarget == null)
         {
-            currentTarget = bestTarget.transform;
+            Debug.LogWarning("Дракон не нашёл подходящей цели.");
         }
     }
 
-    IEnumerator AttackRoutine()
+    void Attack()
     {
-        isAttacking = true;
+        if (currentTarget == null) return;
 
         Building building = currentTarget.GetComponent<Building>();
         if (building != null)
         {
             building.TakeDamage(attackDamage);
             Debug.Log("Дракон атакует " + building.type);
-
-            if (building.IsDestroyed())
-            {
-                currentTarget = null;
-            }
         }
-
-        yield return new WaitForSeconds(attackDelay);
-        isAttacking = false;
+        else
+        {
+            Debug.Log("Цель уничтожена или невалидна. Поиск новой цели.");
+            FindTarget();
+        }
     }
 
     public void TakeDamage(float amount)
     {
         health -= amount;
-        if (health <= 0)
+        Debug.Log("Дракон получил " + amount + " урона. Осталось: " + health);
+
+        if (health <= 0f)
         {
             Die();
         }
@@ -116,7 +104,7 @@ public class DragonAI : MonoBehaviour
 
     void Die()
     {
-        Debug.Log("Дракон погиб");
+        Debug.Log("Дракон погиб.");
         Destroy(gameObject);
     }
 }

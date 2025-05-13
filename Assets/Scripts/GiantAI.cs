@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class GiantAI : MonoBehaviour, IDamageable
+public class GiantAI : MonoBehaviour, damageable
 {
     // Настройки
     public float moveSpeed = 3f;

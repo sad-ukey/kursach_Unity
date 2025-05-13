@@ -3,7 +3,7 @@ using UnityEngine.AI;
 using System.Linq;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class ArcherAI : MonoBehaviour
+public class ArcherAI : MonoBehaviour, damageable
 {
     [Header("Настройки")]
     public float moveSpeed = 3.5f;

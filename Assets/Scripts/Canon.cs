@@ -41,7 +41,7 @@ public class Canon : MonoBehaviour
 
     void Attack(GameObject enemy)
     {
-        IDamageable damageable = enemy.GetComponent<IDamageable>();
+        damageable damageable = enemy.GetComponent<damageable>();
         if (damageable != null)
         {
             damageable.TakeDamage(damage);

@@ -2,12 +2,13 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class ZombieAI : MonoBehaviour, IDamageable
+public class ZombieAI : MonoBehaviour, damageable
 {
     [Header("Характеристики Зомби")]
     public float moveSpeed = 3.5f;
     public float health = 100f;
     public float attackDamage = 15f;
+
 
     private NavMeshAgent agent;
     private Transform currentTarget;

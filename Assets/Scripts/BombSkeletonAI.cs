@@ -3,7 +3,7 @@ using UnityEngine.AI;
 using System.Linq; // Добавляем это пространство имен для LINQ
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class BombSkeletonAI : MonoBehaviour, IDamageable
+public class BombSkeletonAI : MonoBehaviour, damageable
 {
     [Header("Settings")]
     public float moveSpeed = 2f;

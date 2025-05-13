@@ -2,12 +2,13 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class GoblinAI : MonoBehaviour, IDamageable
+public class GoblinAI : MonoBehaviour, damageable
 {
     // Характеристики
     public float moveSpeed = 5f;
     public float health = 50f;
     public float attackDamage = 20f;
+
 
     private NavMeshAgent agent;
     private Transform currentTarget;
