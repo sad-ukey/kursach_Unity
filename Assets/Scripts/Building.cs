@@ -8,13 +8,19 @@ public class Building : MonoBehaviour
     public float health = 100f;
     public bool isBlockingPath = false;
 
-    // Делаем метод виртуальным для переопределения
     public virtual void TakeDamage(float damage)
     {
         health -= damage;
+        Debug.Log($"{type} получил {damage} урона. Осталось здоровья: {health}");
+
         if (health <= 0)
         {
             Destroy(gameObject);
         }
+    }
+
+    public bool IsDestroyed()
+    {
+        return health <= 0;
     }
 }
