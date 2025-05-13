@@ -2,12 +2,13 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class GiantAI : MonoBehaviour
+public class GiantAI : MonoBehaviour, IDamageable
 {
     // Настройки
     public float moveSpeed = 3f;
     public float attackRange = 2f;
     public float attackDamage = 40f;
+    public float health = 50f;
 
     private NavMeshAgent agent;
     private Transform currentTarget;
@@ -54,5 +55,22 @@ public class GiantAI : MonoBehaviour
             building.TakeDamage(attackDamage);
             Debug.Log("Гигант атакует " + building.type);
         }
+    }
+
+    public void TakeDamage(float amount)
+    {
+        health -= amount;
+        Debug.Log("Гигант получил " + amount + " урона. Осталось: " + health);
+
+        if (health <= 0f)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        Debug.Log("Гигант погиб.");
+        Destroy(gameObject);
     }
 }

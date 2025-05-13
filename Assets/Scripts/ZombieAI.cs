@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class ZombieAI : MonoBehaviour
+public class ZombieAI : MonoBehaviour, IDamageable
 {
     [Header("Характеристики Зомби")]
     public float moveSpeed = 3.5f;

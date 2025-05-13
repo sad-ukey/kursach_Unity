@@ -3,12 +3,13 @@ using UnityEngine.AI;
 using System.Linq; // Добавляем это пространство имен для LINQ
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class BombSkeletonAI : MonoBehaviour
+public class BombSkeletonAI : MonoBehaviour, IDamageable
 {
     [Header("Settings")]
     public float moveSpeed = 2f;
     public float explosionDamage = 80f;
     public float explosionRadius = 3f;
+    public float health = 50f;
     public GameObject explosionEffect;
 
     private NavMeshAgent agent;
@@ -89,6 +90,23 @@ public class BombSkeletonAI : MonoBehaviour
             }
         }
 
+        Destroy(gameObject);
+    }
+
+    public void TakeDamage(float amount)
+    {
+        health -= amount;
+        Debug.Log("Гигант получил " + amount + " урона. Осталось: " + health);
+
+        if (health <= 0f)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        Debug.Log("Гигант погиб.");
         Destroy(gameObject);
     }
 
