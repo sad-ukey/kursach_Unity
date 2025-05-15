@@ -14,7 +14,8 @@ GameObject:
   - component: {fileID: 8500955802189492228}
   - component: {fileID: 4971839548700381112}
   - component: {fileID: 8724113625382740331}
-  m_Layer: 0
+  - component: {fileID: 7825196250622609529}
+  m_Layer: 6
   m_Name: Wall_Concrete
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,3 +135,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sizeX: 1
   sizeZ: 1
+--- !u!114 &7825196250622609529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3600789205380977841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a074bb10e6ddd140b27da557097beda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 3
+  health: 100
+  isBlockingPath: 0
