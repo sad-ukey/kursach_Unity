@@ -5,20 +5,28 @@ public class AchievementUI : MonoBehaviour
 {
     public Text titleText;
     public Text descriptionText;
+    public Text progressNumber;
     public Slider progressBar;
     public GameObject checkmark;
 
-    [HideInInspector]
-    public string title;
+    private Achievement currentAchievement;
 
-    public void SetData(Achievement data)
+    // Публичное свойство для доступа к названию достижения из других скриптов
+    public string Title => currentAchievement != null ? currentAchievement.title : "";
+
+    // Устанавливаем данные для отображения
+    public void SetData(Achievement achievement)
     {
-        title = data.title;
-        titleText.text = data.title;
-        descriptionText.text = data.description;
-        progressBar.maxValue = data.requiredProgress;
-        progressBar.value = data.currentProgress;
+        if (achievement == null) return;
 
-        checkmark.SetActive(data.isCompleted);
+        currentAchievement = achievement;
+
+        titleText.text = achievement.title;
+        descriptionText.text = achievement.description;
+        progressBar.maxValue = achievement.requiredProgress;
+        progressBar.value = achievement.currentProgress;
+        progressNumber.text = $"{achievement.currentProgress} / {achievement.requiredProgress}";
+
+        checkmark.SetActive(achievement.isCompleted);
     }
 }

@@ -1,67 +1,117 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class AchievementManager : MonoBehaviour
 {
     public static AchievementManager Instance;
 
     public List<Achievement> achievements = new List<Achievement>();
+    public GameObject achievementPanel;
+    public Transform achievementListParent;  // Родитель UI элементов достижений
+    public GameObject achievementUIPrefab;   // Префаб UI элемента достижения
 
-    public GameObject achievementPanel; // Панель UI
-    public GameObject achievementItemPrefab; // Префаб UI-элемента достижения
-    public Transform achievementListParent; // Родитель UI-списка
+    private List<AchievementUI> achievementUIList = new List<AchievementUI>();
 
-    void Awake()
+    private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
     }
 
-    void Start()
+    private void Start()
     {
         achievementPanel.SetActive(false);
-        PopulateUI();
+        InitializeUI();
+        UpdateUI();
     }
 
-    public void IncrementProgress(string title, int amount = 1)
+    public Dictionary<string, int> GetAllProgress()
     {
+        Dictionary<string, int> progressMap = new Dictionary<string, int>();
         foreach (var achievement in achievements)
         {
-            if (achievement.title == title && !achievement.isCompleted)
-            {
-                achievement.currentProgress += amount;
-                if (achievement.currentProgress >= achievement.requiredProgress)
-                    achievement.currentProgress = achievement.requiredProgress;
+            progressMap[achievement.title] = achievement.currentProgress;
+        }
+        return progressMap;
+    }
+    // Создаем UI элементы для каждого достижения
+    private void InitializeUI()
+    {
+        foreach (Transform child in achievementListParent)
+        {
+            Destroy(child.gameObject);
+        }
+        achievementUIList.Clear();
 
-                UpdateUI();
-                break;
+        foreach (var achievement in achievements)
+        {
+            GameObject uiObj = Instantiate(achievementUIPrefab, achievementListParent);
+            AchievementUI ui = uiObj.GetComponent<AchievementUI>();
+            ui.SetData(achievement);
+            achievementUIList.Add(ui);
+        }
+    }
+
+    // Обновляем все UI элементы (например, при изменении прогресса)
+    public void UpdateUI()
+    {
+        for (int i = 0; i < achievements.Count; i++)
+        {
+            if (i < achievementUIList.Count)
+            {
+                achievementUIList[i].SetData(achievements[i]);
             }
         }
     }
 
-    void PopulateUI()
+    // Метод для установки прогресса достижения (например, при накоплении денег)
+    public void SetProgress(string title, int progress)
     {
-        foreach (Transform child in achievementListParent)
-            Destroy(child.gameObject);
-
-        foreach (var achievement in achievements)
+        Achievement achievement = achievements.Find(a => a.title == title);
+        if (achievement != null)
         {
-            Debug.Log("Создал достижение: " + achievement.title);
-            GameObject item = Instantiate(achievementItemPrefab);
-            item.transform.SetParent(achievementListParent, false); // <--- ключевой момент
-            var ui = item.GetComponent<AchievementUI>();
-            ui.SetData(achievement);
+            if (progress > achievement.currentProgress)
+            {
+                achievement.currentProgress = Mathf.Min(progress, achievement.requiredProgress);
+                if (achievement.isCompleted)
+                {
+                    Debug.Log($"Достижение выполнено: {achievement.title}");
+                }
+                UpdateUI();
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"Достижение с названием '{title}' не найдено.");
         }
     }
 
-    void UpdateUI()
+    // Метод для увеличения прогресса на определенное значение
+    public void IncrementProgress(string title, int increment = 1)
     {
-        foreach (Transform child in achievementListParent)
+        Achievement achievement = achievements.Find(a => a.title == title);
+        if (achievement != null && !achievement.isCompleted)
         {
-            var ui = child.GetComponent<AchievementUI>();
-            ui.SetData(achievements.Find(a => a.title == ui.title));
+            achievement.currentProgress = Mathf.Min(achievement.currentProgress + increment, achievement.requiredProgress);
+            if (achievement.isCompleted)
+            {
+                Debug.Log($"Достижение выполнено: {achievement.title}");
+            }
+            UpdateUI();
         }
+    }
+
+    public void LoadProgress(Dictionary<string, int> achievementProgressMap)
+    {
+        foreach (var kvp in achievementProgressMap)
+        {
+            Achievement achievement = achievements.Find(a => a.title == kvp.Key);
+            if (achievement != null)
+            {
+                achievement.currentProgress = Mathf.Clamp(kvp.Value, 0, achievement.requiredProgress);
+            }
+        }
+        UpdateUI();
     }
 
     public void TogglePanel()

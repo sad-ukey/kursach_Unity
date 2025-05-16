@@ -43,6 +43,7 @@ public class BuildManager : MonoBehaviour
     private bool isPlacing = false;
     private bool ratushaBuilt = false;
     private Dictionary<BuildableData, int> buildCounts = new Dictionary<BuildableData, int>();
+    private HashSet<BuildableData> uniqueBuiltTypes = new HashSet<BuildableData>();
     public void StartWallPlacement() => StartPlacing(wallData);
     public void StartConcreteWallPlacement() => StartPlacing(concreteWallData);
     public void StartXPGeneratorPlacement() => StartPlacing(buildingXPGeneratorData);
@@ -86,6 +87,7 @@ public class BuildManager : MonoBehaviour
         if (data.buildLimit > 0 && buildCounts.TryGetValue(data, out int count) && count >= data.buildLimit)
         {
             Debug.Log($"Превышен лимит построек для {data.prefab.name}. Максимум: {data.buildLimit}");
+            AchievementManager.Instance.IncrementProgress("Не все сразу", 1);
             return;
         }
 
@@ -157,16 +159,39 @@ public class BuildManager : MonoBehaviour
                 buildCounts[currentData] = 0;
             buildCounts[currentData]++;
 
+            // Добавляем в список уникальных построек
+            if (!uniqueBuiltTypes.Contains(currentData))
+            {
+                uniqueBuiltTypes.Add(currentData);
+                AchievementManager.Instance.IncrementProgress("Разнообразие", 1);
+            }
+
+            if (currentData == wallData || currentData == concreteWallData)
+            {
+                AchievementManager.Instance.IncrementProgress("Моя территория!", 1);
+            }
+
             if (currentData == buildingRatushaData)
             {
                 ratushaBuilt = true;
                 Debug.Log("Ратуша построена. Доступны остальные постройки.");
+                AchievementManager.Instance.IncrementProgress("Начало", 1);
 
                 SidebarController sidebar = FindObjectOfType<SidebarController>();
                 if (sidebar != null)
                 {
                     sidebar.UpdateBuildingButtons();
                 }
+            }
+
+            if (currentData == weaponCannonData)
+            {
+                AchievementManager.Instance.IncrementProgress("К оружию!", 1);
+            }
+
+            if (currentData == weaponCrossbowData)
+            {
+                AchievementManager.Instance.IncrementProgress("Воздушная угроза", 1);
             }
 
             EndPlacement();
@@ -295,7 +320,10 @@ public class BuildManager : MonoBehaviour
 
         BuildableData data = GetBuildableDataByPrefab(last.obj.name.Replace("(Clone)", "").Trim());
         if (data != null && buildCounts.ContainsKey(data))
+        {
             buildCounts[data] = Mathf.Max(0, buildCounts[data] - 1);
+            AchievementManager.Instance.IncrementProgress("Отставить!", 1);
+        }
 
         Debug.Log("Откат последнего действия.");
     }
@@ -337,6 +365,16 @@ public class BuildManager : MonoBehaviour
 
         save.isRatushaBuilt = ratushaBuilt;
 
+        var progressDict = AchievementManager.Instance.GetAllProgress();
+        foreach (var kvp in progressDict)
+        {
+            save.achievementProgressList.Add(new AchievementProgressEntry
+            {
+                title = kvp.Key,
+                progress = kvp.Value
+            });
+        }
+
         SaveSystem.Save(save);
     }
 
@@ -360,6 +398,17 @@ public class BuildManager : MonoBehaviour
                 foreach (var cell in cells)
                     occupiedCells.Add(cell);
             }
+        }
+
+        if (save.achievementProgressList != null)
+        {
+            Dictionary<string, int> progressMap = new Dictionary<string, int>();
+            foreach (var entry in save.achievementProgressList)
+            {
+                progressMap[entry.title] = entry.progress;
+            }
+
+            AchievementManager.Instance.LoadProgress(progressMap);
         }
 
         ratushaBuilt = save.isRatushaBuilt;

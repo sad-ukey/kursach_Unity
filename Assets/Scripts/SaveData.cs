@@ -18,4 +18,5 @@ public class SaveData
     public bool isRatushaBuilt = false;
     public List<PlacedObjectData> placedObjects = new List<PlacedObjectData>();
     public Dictionary<string, int> placedCountMap = new Dictionary<string, int>();
+    public List<AchievementProgressEntry> achievementProgressList = new List<AchievementProgressEntry>();
 }

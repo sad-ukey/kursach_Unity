@@ -8,3 +8,9 @@ public class Achievement
     public int requiredProgress;
     public bool isCompleted => currentProgress >= requiredProgress;
 }
+
+public class AchievementProgressEntry
+{
+    public string title;
+    public int progress;
+}

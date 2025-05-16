@@ -39,7 +39,14 @@ public class CurrencyManager : MonoBehaviour
     public void UpdateUI()
     {
         if (moneyText != null)
+        {
             moneyText.text = "₽ " + currentMoney.ToString();
+        }
+
+        if (AchievementManager.Instance != null)
+        {
+            AchievementManager.Instance.SetProgress("Молодой бизнесмен", currentMoney);
+        }
     }
 
     public void LoadMoney(int amount)
