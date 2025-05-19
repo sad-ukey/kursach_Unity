@@ -76,6 +76,7 @@ public class AchievementManager : MonoBehaviour
                 if (achievement.isCompleted)
                 {
                     Debug.Log($"Достижение выполнено: {achievement.title}");
+                    NotificationManager.Instance.ShowAchievement(achievement.title);
                 }
                 UpdateUI();
             }
@@ -96,6 +97,7 @@ public class AchievementManager : MonoBehaviour
             if (achievement.isCompleted)
             {
                 Debug.Log($"Достижение выполнено: {achievement.title}");
+                NotificationManager.Instance.ShowAchievement(achievement.title);
             }
             UpdateUI();
         }
