@@ -11,6 +11,9 @@ public class BuildingInfoUI : MonoBehaviour
     public Text levelText;
     public Text healthText;
     public Text typeText;
+    public Button upgradeButton;
+
+    private BuildingInfo currentBuilding;
 
     private void Awake()
     {
@@ -20,18 +23,37 @@ public class BuildingInfoUI : MonoBehaviour
 
     public void ShowInfo(BuildingInfo info)
     {
+        currentBuilding = info;
+
         titleText.text = info.buildingName;
-        levelText.text = "Уровень: " + info.buildingLevel;
-        healthText.text = "Здоровье: " + info.buildingHealth;
+        levelText.text = "Уровень: " + info.buildingLevel.ToString();
+        healthText.text = "Здоровье: " + info.buildingHealth.ToString();
         typeText.text = "Тип: " + info.buildingType;
         descriptionText.text = info.description;
 
         panel.SetActive(true);
     }
 
+    public void UpgradeBuilding()
+    {
+        if (currentBuilding == null) return;
+
+        int cost = currentBuilding.upgradeCost;
+        if (CurrencyManager.Instance.HasEnough(cost))
+        {
+            CurrencyManager.Instance.Spend(cost);
+            currentBuilding.Upgrade();
+            ShowInfo(currentBuilding); // Обновляем отображение
+        }
+        else
+        {
+            Debug.Log("Недостаточно средств для улучшения.");
+        }
+    }
+
     public void Close()
     {
         panel.SetActive(false);
-        Debug.Log("Закрытие панели");
+        currentBuilding = null;
     }
 }

@@ -1215,6 +1215,7 @@ MonoBehaviour:
   levelText: {fileID: 733326756}
   healthText: {fileID: 1756079284}
   typeText: {fileID: 847463376}
+  upgradeButton: {fileID: 0}
 --- !u!1 &514653662
 GameObject:
   m_ObjectHideFlags: 0
@@ -1514,7 +1515,6 @@ GameObject:
   - component: {fileID: 567291784}
   - component: {fileID: 567291783}
   - component: {fileID: 567291782}
-  - component: {fileID: 567291786}
   m_Layer: 5
   m_Name: BuildingInfoMenu
   m_TagString: Untagged
@@ -1605,21 +1605,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &567291786
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 567291781}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51630c0d63d6a154896f2ec5daaa53c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attackRange: 10
-  damage: 15
-  fireRate: 1
 --- !u!1 &580396071
 GameObject:
   m_ObjectHideFlags: 0
@@ -2535,7 +2520,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1323692809}
   m_HandleRect: {fileID: 1323692808}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -3478,8 +3463,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 514653664}
   m_HandleRect: {fileID: 514653663}
   m_Direction: 0
-  m_Value: 0
-  m_Size: 0.99999994
+  m_Value: 1
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4232,11 +4217,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waves:
-  - enemyPrefab: {fileID: 7900678545700060247, guid: aa065044b266c3e4e9152b6d6b2fa0a0, type: 3}
-    count: 1
+  - enemies:
+    - enemyPrefab: {fileID: 7900678545700060247, guid: aa065044b266c3e4e9152b6d6b2fa0a0, type: 3}
+      count: 1
+  - enemies:
+    - enemyPrefab: {fileID: 6212764690653475876, guid: 295b73f879465d84a93165b32f60a8d1, type: 3}
+      count: 2
   spawnPoints:
   - {fileID: 258144401}
-  spawnDelay: 0.5
+  spawnDelay: 1
 --- !u!1 &1092698494
 GameObject:
   m_ObjectHideFlags: 0
@@ -5900,7 +5889,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1529213457}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 510150946}
+        m_TargetAssemblyTypeName: BuildingInfoUI, Assembly-CSharp
+        m_MethodName: UpgradeBuilding
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1529213457
 MonoBehaviour:
   m_ObjectHideFlags: 0

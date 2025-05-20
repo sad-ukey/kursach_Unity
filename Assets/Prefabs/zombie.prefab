@@ -149,9 +149,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01b7788e2cc743f43980873e9bf232ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3.5
+  moveSpeed: 2
   health: 100
-  attackDamage: 15
+  attackDamage: 40
+  attackCooldown: 0.5
 --- !u!195 &8529965107934052978
 NavMeshAgent:
   m_ObjectHideFlags: 0

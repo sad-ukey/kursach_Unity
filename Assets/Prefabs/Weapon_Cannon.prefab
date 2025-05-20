@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
-  health: 100
+  health: 400
   isBlockingPath: 0
 --- !u!114 &-4588610094444070346
 MonoBehaviour:
@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRange: 15
-  damage: 15
+  damage: 40
   fireRate: 1
 --- !u!1 &7198351346241917911
 GameObject:

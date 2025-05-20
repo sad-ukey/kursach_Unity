@@ -123,6 +123,7 @@ public class ArcherAI : MonoBehaviour, damageable
     void Die()
     {
         Destroy(gameObject);
+        AchievementManager.Instance.IncrementProgress("Охотник за головами", 1);
     }
 
     void OnDrawGizmosSelected()

@@ -96,7 +96,7 @@ public class BombSkeletonAI : MonoBehaviour, damageable
     public void TakeDamage(float amount)
     {
         health -= amount;
-        Debug.Log("Гигант получил " + amount + " урона. Осталось: " + health);
+        Debug.Log("Подрывник получил " + amount + " урона. Осталось: " + health);
 
         if (health <= 0f)
         {
@@ -106,7 +106,8 @@ public class BombSkeletonAI : MonoBehaviour, damageable
 
     void Die()
     {
-        Debug.Log("Гигант погиб.");
+        AchievementManager.Instance.IncrementProgress("Охотник за головами", 1);
+        Debug.Log("Подрывник погиб.");
         Destroy(gameObject);
     }
 

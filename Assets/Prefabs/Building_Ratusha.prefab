@@ -133,8 +133,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af4f136b7f6b8154f8e3b6a5c89d49f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sizeX: 4
-  sizeZ: 4
+  sizeX: 3
+  sizeZ: 3
 --- !u!114 &-3221324839659847889
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -148,5 +148,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 2
-  health: 100
+  health: 1000
   isBlockingPath: 0

@@ -172,10 +172,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1641a982059a69b429c04f35ef51e3cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 1.5
+  moveSpeed: 1
   attackRange: 2
-  attackDamage: 40
-  health: 500
+  attackDamage: 50
+  health: 450
 --- !u!95 &8172501572938160783
 Animator:
   serializedVersion: 5

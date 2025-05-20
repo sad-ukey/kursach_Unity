@@ -55,7 +55,7 @@ public class GoblinAI : MonoBehaviour, damageable
         agent.SetDestination(currentTarget.position);
 
         // Проверка дистанции до цели
-        if (Vector3.Distance(transform.position, currentTarget.position) <= 1.5f)
+        if (Vector3.Distance(transform.position, currentTarget.position) <= 2f)
         {
             Attack();
         }
@@ -101,6 +101,7 @@ public class GoblinAI : MonoBehaviour, damageable
 
     void Die()
     {
+        AchievementManager.Instance.IncrementProgress("Охотник за головами", 1);
         Debug.Log("Гоблин погиб.");
         Destroy(gameObject);
     }

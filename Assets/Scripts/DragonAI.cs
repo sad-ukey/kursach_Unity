@@ -42,7 +42,7 @@ public class DragonAI : MonoBehaviour, damageable
 
         agent.SetDestination(currentTarget.position);
 
-        if (Vector3.Distance(transform.position, currentTarget.position) <= 5f)
+        if (Vector3.Distance(transform.position, currentTarget.position) <= 2f)
         {
             Attack();
         }
@@ -104,6 +104,7 @@ public class DragonAI : MonoBehaviour, damageable
 
     void Die()
     {
+        AchievementManager.Instance.IncrementProgress("Охотник за головами", 1);
         Debug.Log("Дракон погиб.");
         Destroy(gameObject);
     }

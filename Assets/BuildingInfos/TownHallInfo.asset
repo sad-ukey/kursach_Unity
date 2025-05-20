@@ -19,3 +19,5 @@ MonoBehaviour:
   buildingLevel: 1
   buildingType: "\u041E\u0431\u044B\u0447\u043D\u043E\u0435 "
   buildingHealth: 1000
+  upgradeCost: 50
+  healthIncrease: 25

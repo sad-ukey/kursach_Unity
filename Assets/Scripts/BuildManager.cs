@@ -176,6 +176,7 @@ public class BuildManager : MonoBehaviour
                 ratushaBuilt = true;
                 Debug.Log("Ратуша построена. Доступны остальные постройки.");
                 AchievementManager.Instance.IncrementProgress("Начало", 1);
+                AchievementManager.Instance.IncrementProgress("Как похорошела Москва", 1);
 
                 SidebarController sidebar = FindObjectOfType<SidebarController>();
                 if (sidebar != null)

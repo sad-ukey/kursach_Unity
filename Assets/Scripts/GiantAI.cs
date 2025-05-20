@@ -70,6 +70,7 @@ public class GiantAI : MonoBehaviour, damageable
 
     void Die()
     {
+        AchievementManager.Instance.IncrementProgress("Охотник за головами", 1);
         Debug.Log("Гигант погиб.");
         Destroy(gameObject);
     }

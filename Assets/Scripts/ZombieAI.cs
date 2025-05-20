@@ -9,6 +9,8 @@ public class ZombieAI : MonoBehaviour, damageable
     public float health = 100f;
     public float attackDamage = 15f;
 
+    public float attackCooldown = 1.5f; 
+    private float nextAttackTime = 0f;  
 
     private NavMeshAgent agent;
     private Transform currentTarget;
@@ -30,7 +32,8 @@ public class ZombieAI : MonoBehaviour, damageable
 
         agent.SetDestination(currentTarget.position);
 
-        if (Vector3.Distance(transform.position, currentTarget.position) <= 1.5f)
+        float distance = Vector3.Distance(transform.position, currentTarget.position);
+        if (distance <= 2f && Time.time >= nextAttackTime)
         {
             Attack();
         }
@@ -42,7 +45,6 @@ public class ZombieAI : MonoBehaviour, damageable
         float closestDistance = Mathf.Infinity;
         Building bestTarget = null;
 
-        // 1. »щем ближайшую ƒќ—“”ѕЌ”ё цель (кроме заборов)
         foreach (var building in allBuildings)
         {
             if (building.type == Building.BuildingType.Fence) continue;
@@ -56,7 +58,6 @@ public class ZombieAI : MonoBehaviour, damageable
             }
         }
 
-        // 2. ≈сли других нет Ч ищем забор, который блокирует путь
         if (bestTarget == null)
         {
             foreach (var building in allBuildings)
@@ -99,6 +100,8 @@ public class ZombieAI : MonoBehaviour, damageable
             building.TakeDamage(attackDamage);
             Debug.Log("«омби атакует " + building.type);
 
+            nextAttackTime = Time.time + attackCooldown;
+
             if (building.IsDestroyed())
             {
                 currentTarget = null;
@@ -117,6 +120,7 @@ public class ZombieAI : MonoBehaviour, damageable
 
     void Die()
     {
+        AchievementManager.Instance.IncrementProgress("ќхотник за головами", 1);
         Debug.Log("«омби уничтожен");
         Destroy(gameObject);
     }
