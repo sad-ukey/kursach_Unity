@@ -20,9 +20,11 @@ public class ArcherAI : MonoBehaviour, damageable
     private Transform currentTarget;
     private float lastAttackTime;
     private AudioSource audioSource;
+    private Animator animator;
 
     void Start()
     {
+        animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         agent.speed = moveSpeed;
         agent.stoppingDistance = attackRange * 0.9f; // ������������ ������ � ����
@@ -36,6 +38,7 @@ public class ArcherAI : MonoBehaviour, damageable
 
     void Update()
     {
+        animator.SetFloat("Speed", agent.velocity.magnitude);
         if (health <= 0) return;
 
         if (currentTarget == null)
@@ -102,6 +105,7 @@ public class ArcherAI : MonoBehaviour, damageable
         // ��������� �����
         if (currentTarget != null)
         {
+            animator.SetTrigger("Attack");
             Building building = currentTarget.GetComponent<Building>();
             if (building != null)
             {
@@ -122,6 +126,7 @@ public class ArcherAI : MonoBehaviour, damageable
 
     void Die()
     {
+        animator.SetTrigger("Death");
         Destroy(gameObject);
         AchievementManager.Instance.IncrementProgress("������� �� ��������", 1);
     }

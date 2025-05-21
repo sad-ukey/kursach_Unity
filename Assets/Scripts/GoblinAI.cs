@@ -4,7 +4,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class GoblinAI : MonoBehaviour, damageable
 {
-    // Характеристики
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public float moveSpeed = 5f;
     public float health = 50f;
     public float attackDamage = 20f;
@@ -12,23 +12,25 @@ public class GoblinAI : MonoBehaviour, damageable
 
     private NavMeshAgent agent;
     private Transform currentTarget;
+    private Animator animator;
 
     private readonly Building.BuildingType[] priorityOrder =
     {
-        Building.BuildingType.Economic,   // Главный приоритет
-        Building.BuildingType.TownHall,   // Вторичные цели
+        Building.BuildingType.Economic,   // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        Building.BuildingType.TownHall,   // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
         Building.BuildingType.Defensive
     };
 
     void Start()
     {
+        animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         agent.speed = moveSpeed;
 
         if (!agent.isOnNavMesh)
         {
-            Debug.LogError("Гоблин не находится на NavMesh! Переместите его на навигационную зону.");
-            enabled = false; // отключаем скрипт, чтобы избежать ошибок
+            Debug.LogError("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ NavMesh! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ.");
+            enabled = false; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             return;
         }
 
@@ -37,24 +39,25 @@ public class GoblinAI : MonoBehaviour, damageable
 
     void Update()
     {
-        // Проверка: если цели нет, пытаемся её найти
+        animator.SetFloat("Speed", agent.velocity.magnitude);
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ
         if (currentTarget == null)
         {
             FindTarget();
             return;
         }
 
-        // Проверка: агент активен и на NavMesh
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ NavMesh
         if (agent == null || !agent.isOnNavMesh)
         {
-            Debug.LogWarning("NavMeshAgent не готов или гоблин не стоит на NavMesh");
+            Debug.LogWarning("NavMeshAgent пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ NavMesh");
             return;
         }
 
-        // Движение к цели
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
         agent.SetDestination(currentTarget.position);
 
-        // Проверка дистанции до цели
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ
         if (Vector3.Distance(transform.position, currentTarget.position) <= 2f)
         {
             Attack();
@@ -67,7 +70,7 @@ public class GoblinAI : MonoBehaviour, damageable
 
         if (currentTarget == null)
         {
-            //Debug.LogWarning("Гоблин не нашёл приоритетную цель.");
+            //Debug.LogWarning("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ.");
         }
     }
 
@@ -78,20 +81,21 @@ public class GoblinAI : MonoBehaviour, damageable
         Building building = currentTarget.GetComponent<Building>();
         if (building != null && !building.IsDestroyed())
         {
+            animator.SetTrigger("Attack");
             building.TakeDamage(attackDamage);
-            Debug.Log("Гоблин атакует " + building.type);
+            Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ " + building.type);
         }
         else
         {
-            Debug.Log("Цель уничтожена или невалидна. Поиск новой цели.");
-            FindTarget(); // Ищем новую цель, если старая недоступна
+            Debug.Log("пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ.");
+            FindTarget(); // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         }
     }
 
     public void TakeDamage(float amount)
     {
         health -= amount;
-        Debug.Log("Гоблин получил " + amount + " урона. Осталось: " + health);
+        Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ " + amount + " пїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " + health);
 
         if (health <= 0f)
         {
@@ -101,8 +105,9 @@ public class GoblinAI : MonoBehaviour, damageable
 
     void Die()
     {
-        AchievementManager.Instance.IncrementProgress("Охотник за головами", 1);
-        Debug.Log("Гоблин погиб.");
+        animator.SetTrigger("Death");
+        AchievementManager.Instance.IncrementProgress("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", 1);
+        Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ.");
         Destroy(gameObject);
     }
 }

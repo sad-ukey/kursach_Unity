@@ -4,7 +4,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class GiantAI : MonoBehaviour, damageable
 {
-    // Настройки
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public float moveSpeed = 3f;
     public float attackRange = 2f;
     public float attackDamage = 40f;
@@ -12,15 +12,17 @@ public class GiantAI : MonoBehaviour, damageable
 
     private NavMeshAgent agent;
     private Transform currentTarget;
+    private Animator animator;
     private readonly Building.BuildingType[] priorityOrder =
     {
-        Building.BuildingType.Defensive, // Главный приоритет
-        Building.BuildingType.TownHall,  // Вторичные цели
+        Building.BuildingType.Defensive, // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        Building.BuildingType.TownHall,  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
         Building.BuildingType.Economic
     };
 
     void Start()
     {
+        animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         agent.speed = moveSpeed;
         FindTarget();
@@ -28,6 +30,7 @@ public class GiantAI : MonoBehaviour, damageable
 
     void Update()
     {
+        animator.SetFloat("Speed", agent.velocity.magnitude);
         if (currentTarget == null)
         {
             FindTarget();
@@ -52,15 +55,16 @@ public class GiantAI : MonoBehaviour, damageable
         var building = currentTarget.GetComponent<Building>();
         if (building != null)
         {
+            animator.SetTrigger("Attack");
             building.TakeDamage(attackDamage);
-            Debug.Log("Гигант атакует " + building.type);
+            Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ " + building.type);
         }
     }
 
     public void TakeDamage(float amount)
     {
         health -= amount;
-        Debug.Log("Гигант получил " + amount + " урона. Осталось: " + health);
+        Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ " + amount + " пїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " + health);
 
         if (health <= 0f)
         {
@@ -70,8 +74,9 @@ public class GiantAI : MonoBehaviour, damageable
 
     void Die()
     {
-        AchievementManager.Instance.IncrementProgress("Охотник за головами", 1);
-        Debug.Log("Гигант погиб.");
+        animator.SetTrigger("Death");
+        AchievementManager.Instance.IncrementProgress("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", 1);
+        Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ.");
         Destroy(gameObject);
     }
 }

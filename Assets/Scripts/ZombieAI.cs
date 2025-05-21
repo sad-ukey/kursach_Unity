@@ -4,7 +4,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class ZombieAI : MonoBehaviour, damageable
 {
-    [Header("Характеристики Зомби")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ")]
     public float moveSpeed = 3.5f;
     public float health = 100f;
     public float attackDamage = 15f;
@@ -14,9 +14,11 @@ public class ZombieAI : MonoBehaviour, damageable
 
     private NavMeshAgent agent;
     private Transform currentTarget;
+    private Animator animator;
 
     void Start()
     {
+        animator = GetComponent<Animator>(); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         agent = GetComponent<NavMeshAgent>();
         agent.speed = moveSpeed;
         FindTarget();
@@ -24,6 +26,7 @@ public class ZombieAI : MonoBehaviour, damageable
 
     void Update()
     {
+        animator.SetFloat("Speed", agent.velocity.magnitude); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (currentTarget == null)
         {
             FindTarget();
@@ -97,8 +100,9 @@ public class ZombieAI : MonoBehaviour, damageable
         Building building = currentTarget.GetComponent<Building>();
         if (building != null)
         {
+            animator.SetTrigger("Attack");
             building.TakeDamage(attackDamage);
-            Debug.Log("Зомби атакует " + building.type);
+            Debug.Log("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ " + building.type);
 
             nextAttackTime = Time.time + attackCooldown;
 
@@ -114,14 +118,15 @@ public class ZombieAI : MonoBehaviour, damageable
         health -= amount;
         if (health <= 0)
         {
+            animator.SetTrigger("Death");
             Die();
         }
     }
 
     void Die()
     {
-        AchievementManager.Instance.IncrementProgress("Охотник за головами", 1);
-        Debug.Log("Зомби уничтожен");
+        AchievementManager.Instance.IncrementProgress("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", 1);
+        Debug.Log("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
         Destroy(gameObject);
     }
 }
