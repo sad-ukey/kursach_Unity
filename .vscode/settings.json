@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "kursach_Unity.sln"
+    "dotnet.defaultSolution": "kursach_Unity_remote_check.sln"
 }
