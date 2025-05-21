@@ -5,14 +5,14 @@ using System.Linq;
 [RequireComponent(typeof(NavMeshAgent))]
 public class ArcherAI : MonoBehaviour, damageable
 {
-    [Header("Настройки")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     public float moveSpeed = 3.5f;
-    public float attackRange = 8f;      // Большая дистанция атаки
-    public float attackDamage = 25f;    // Средний урон
+    public float attackRange = 8f;      // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+    public float attackDamage = 25f;    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
     public float attackCooldown = 2f;
-    public float health = 60f;          // Малое здоровье
+    public float health = 60f;          // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
-    [Header("Ссылки")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅ")]
     public GameObject attackEffect;
     public AudioClip attackSound;
 
@@ -25,7 +25,7 @@ public class ArcherAI : MonoBehaviour, damageable
     {
         agent = GetComponent<NavMeshAgent>();
         agent.speed = moveSpeed;
-        agent.stoppingDistance = attackRange * 0.9f; // Остановиться близко к цели
+        agent.stoppingDistance = attackRange * 0.9f; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
 
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
@@ -44,10 +44,10 @@ public class ArcherAI : MonoBehaviour, damageable
             return;
         }
 
-        // Движение к цели
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
         agent.SetDestination(currentTarget.position);
 
-        // Проверка дистанции для атаки
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         float distance = Vector3.Distance(transform.position, currentTarget.position);
         if (distance <= attackRange && Time.time - lastAttackTime >= attackCooldown)
         {
@@ -58,20 +58,20 @@ public class ArcherAI : MonoBehaviour, damageable
 
     void FindTarget()
     {
-        // Получаем все постройки, кроме стен
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
         var buildings = GameObject.FindObjectsOfType<Building>()
             .Where(b => b.type != Building.BuildingType.Fence && b.health > 0)
             .OrderBy(b => Vector3.Distance(transform.position, b.transform.position))
             .ToArray();
 
-        // Если есть обычные постройки - атакуем ближайшую
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (buildings.Length > 0)
         {
             currentTarget = buildings[0].transform;
             return;
         }
 
-        // Если обычных построек нет - ищем стены, блокирующие путь
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ - пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
         var blockingWalls = GameObject.FindObjectsOfType<Building>()
             .Where(b => b.type == Building.BuildingType.Fence &&
                        b.health > 0 &&
@@ -87,26 +87,26 @@ public class ArcherAI : MonoBehaviour, damageable
 
     void Attack()
     {
-        // Эффект атаки (луч без физики)
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ)
         if (attackEffect != null)
         {
             Instantiate(attackEffect, transform.position, Quaternion.identity);
         }
 
-        // Звук атаки
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         if (attackSound != null)
         {
             audioSource.PlayOneShot(attackSound);
         }
 
-        // Нанесение урона
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         if (currentTarget != null)
         {
             Building building = currentTarget.GetComponent<Building>();
             if (building != null)
             {
                 building.TakeDamage(attackDamage);
-                Debug.Log($"Лучник атакует {building.type} (Урон: {attackDamage})");
+                Debug.Log($"пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ {building.type} (пїЅпїЅпїЅпїЅ: {attackDamage})");
             }
         }
     }
@@ -123,7 +123,7 @@ public class ArcherAI : MonoBehaviour, damageable
     void Die()
     {
         Destroy(gameObject);
-        AchievementManager.Instance.IncrementProgress("Охотник за головами", 1);
+        AchievementManager.Instance.IncrementProgress("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", 1);
     }
 
     void OnDrawGizmosSelected()
