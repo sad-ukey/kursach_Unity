@@ -43,7 +43,7 @@ public class BuildingInfoUI : MonoBehaviour
         {
             CurrencyManager.Instance.Spend(cost);
             currentBuilding.Upgrade();
-            ShowInfo(currentBuilding); // Обновляем отображение
+            ShowInfo(currentBuilding); 
         }
         else
         {

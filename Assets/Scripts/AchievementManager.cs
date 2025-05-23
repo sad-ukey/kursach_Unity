@@ -1,14 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+
 public class AchievementManager : MonoBehaviour
 {
     public static AchievementManager Instance;
 
     public List<Achievement> achievements = new List<Achievement>();
     public GameObject achievementPanel;
-    public Transform achievementListParent;  // Родитель UI элементов достижений
-    public GameObject achievementUIPrefab;   // Префаб UI элемента достижения
+    public Transform achievementListParent;
+    public GameObject achievementUIPrefab;
 
     private List<AchievementUI> achievementUIList = new List<AchievementUI>();
 
@@ -25,16 +27,6 @@ public class AchievementManager : MonoBehaviour
         UpdateUI();
     }
 
-    public Dictionary<string, int> GetAllProgress()
-    {
-        Dictionary<string, int> progressMap = new Dictionary<string, int>();
-        foreach (var achievement in achievements)
-        {
-            progressMap[achievement.title] = achievement.currentProgress;
-        }
-        return progressMap;
-    }
-    // Создаем UI элементы для каждого достижения
     private void InitializeUI()
     {
         foreach (Transform child in achievementListParent)
@@ -52,7 +44,6 @@ public class AchievementManager : MonoBehaviour
         }
     }
 
-    // Обновляем все UI элементы (например, при изменении прогресса)
     public void UpdateUI()
     {
         for (int i = 0; i < achievements.Count; i++)
@@ -64,7 +55,6 @@ public class AchievementManager : MonoBehaviour
         }
     }
 
-    // Метод для установки прогресса достижения (например, при накоплении денег)
     public void SetProgress(string title, int progress)
     {
         Achievement achievement = achievements.Find(a => a.title == title);
@@ -76,18 +66,13 @@ public class AchievementManager : MonoBehaviour
                 if (achievement.isCompleted)
                 {
                     Debug.Log($"Достижение выполнено: {achievement.title}");
-                    NotificationManager.Instance.ShowAchievement(achievement.title);
+                    NotificationManager.Instance?.ShowAchievement(achievement.title);
                 }
                 UpdateUI();
             }
         }
-        else
-        {
-            Debug.LogWarning($"Достижение с названием '{title}' не найдено.");
-        }
     }
 
-    // Метод для увеличения прогресса на определенное значение
     public void IncrementProgress(string title, int increment = 1)
     {
         Achievement achievement = achievements.Find(a => a.title == title);
@@ -97,20 +82,30 @@ public class AchievementManager : MonoBehaviour
             if (achievement.isCompleted)
             {
                 Debug.Log($"Достижение выполнено: {achievement.title}");
-                NotificationManager.Instance.ShowAchievement(achievement.title);
+                NotificationManager.Instance?.ShowAchievement(achievement.title);
             }
             UpdateUI();
         }
     }
 
-    public void LoadProgress(Dictionary<string, int> achievementProgressMap)
+    public List<StringIntPair> GetAchievementProgressList()
     {
-        foreach (var kvp in achievementProgressMap)
+        List<StringIntPair> list = new List<StringIntPair>();
+        foreach (var achievement in achievements)
         {
-            Achievement achievement = achievements.Find(a => a.title == kvp.Key);
+            list.Add(new StringIntPair { key = achievement.title, value = achievement.currentProgress });
+        }
+        return list;
+    }
+
+    public void LoadProgressFromList(List<StringIntPair> progressList)
+    {
+        foreach (var entry in progressList)
+        {
+            Achievement achievement = achievements.Find(a => a.title == entry.key);
             if (achievement != null)
             {
-                achievement.currentProgress = Mathf.Clamp(kvp.Value, 0, achievement.requiredProgress);
+                achievement.currentProgress = Mathf.Clamp(entry.value, 0, achievement.requiredProgress);
             }
         }
         UpdateUI();

@@ -11,12 +11,22 @@ public class PlacedObjectData
     public int sizeZ;
 }
 
+
+[System.Serializable]
+public class StringIntPair
+{
+    public string key;
+    public int value;
+}
+
 [System.Serializable]
 public class SaveData
 {
     public int savedMoney = 0;
     public bool isRatushaBuilt = false;
+
     public List<PlacedObjectData> placedObjects = new List<PlacedObjectData>();
-    public Dictionary<string, int> placedCountMap = new Dictionary<string, int>();
-    public List<AchievementProgressEntry> achievementProgressList = new List<AchievementProgressEntry>();
+
+    public List<StringIntPair> placedCountList = new List<StringIntPair>();
+
 }

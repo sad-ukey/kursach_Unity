@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using System.Collections;
 
 public class PlacedStructure
 {
@@ -51,7 +52,6 @@ public class BuildManager : MonoBehaviour
     public void StartSkladPlacement() => StartPlacing(buildingSkladData);
     public void StartCannonPlacement() => StartPlacing(weaponCannonData);
     public void StartCrossbowPlacement() => StartPlacing(weaponCrossbowData);
-
     public bool CanCurrentlyPlace()
     {
         // Если размещается ратуша — всегда можно
@@ -344,77 +344,37 @@ public class BuildManager : MonoBehaviour
         currentPrefab = null;
     }
 
-    public void SaveGame()
+    public List<GameObject> GetAllPlacedObjects()
     {
-        SaveData save = new SaveData();
-        save.savedMoney = CurrencyManager.Instance.GetCurrentMoney();
-
-        foreach (var obj in allPlacedObjects)
-        {
-            var size = obj.GetComponent<BuildableSize>();
-            if (size == null) continue;
-
-            save.placedObjects.Add(new PlacedObjectData
-            {
-                prefabName = obj.name.Replace("(Clone)", "").Trim(),
-                position = obj.transform.position,
-                rotation = obj.transform.rotation,
-                sizeX = size.sizeX,
-                sizeZ = size.sizeZ
-            });
-        }
-
-        save.isRatushaBuilt = ratushaBuilt;
-
-        var progressDict = AchievementManager.Instance.GetAllProgress();
-        foreach (var kvp in progressDict)
-        {
-            save.achievementProgressList.Add(new AchievementProgressEntry
-            {
-                title = kvp.Key,
-                progress = kvp.Value
-            });
-        }
-
-        SaveSystem.Save(save);
+        return allPlacedObjects;
     }
 
-    public void LoadGame()
+    public void ClearBuildData()
     {
-        SaveData save = SaveSystem.Load();
-
-        CurrencyManager.Instance.LoadMoney(save.savedMoney);
-
         buildCounts.Clear();
+        occupiedCells.Clear();
+        foreach (var obj in allPlacedObjects)
+            Destroy(obj);
+        allPlacedObjects.Clear();
+    }
 
-        foreach (var data in save.placedObjects)
+    public void PlaceLoadedObject(PlacedObjectData data)
+    {
+        GameObject prefab = GetPrefabByName(data.prefabName);
+        if (prefab != null)
         {
-            GameObject prefab = GetPrefabByName(data.prefabName);
-            if (prefab != null)
-            {
-                GameObject placed = Instantiate(prefab, data.position, data.rotation);
-                allPlacedObjects.Add(placed);
+            GameObject placed = Instantiate(prefab, data.position, data.rotation);
+            allPlacedObjects.Add(placed);
 
-                List<Vector2Int> cells = GetOccupiedCells(data.position, data.sizeX, data.sizeZ, data.rotation);
-                foreach (var cell in cells)
-                    occupiedCells.Add(cell);
-            }
+            List<Vector2Int> cells = GetOccupiedCells(data.position, data.sizeX, data.sizeZ, data.rotation);
+            foreach (var cell in cells)
+                occupiedCells.Add(cell);
         }
+    }
 
-        if (save.achievementProgressList != null)
-        {
-            Dictionary<string, int> progressMap = new Dictionary<string, int>();
-            foreach (var entry in save.achievementProgressList)
-            {
-                progressMap[entry.title] = entry.progress;
-            }
-
-            AchievementManager.Instance.LoadProgress(progressMap);
-        }
-
-        ratushaBuilt = save.isRatushaBuilt;
-
-        Debug.Log("Игра загружена.");
+    public void SetRatushaBuilt(bool built)
+    {
+        ratushaBuilt = built;
     }
 
     private GameObject GetPrefabByName(string name)
