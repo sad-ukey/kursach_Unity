@@ -364,13 +364,30 @@ public class BuildManager : MonoBehaviour
         if (prefab != null)
         {
             GameObject placed = Instantiate(prefab, data.position, data.rotation);
+
+            BuildingState state = placed.GetComponent<BuildingState>();
+            if (state != null)
+            {
+                state.currentLevel = data.buildingLevel;
+                state.currentHealth = data.buildingHealth;
+            }
+
             allPlacedObjects.Add(placed);
 
             List<Vector2Int> cells = GetOccupiedCells(data.position, data.sizeX, data.sizeZ, data.rotation);
             foreach (var cell in cells)
                 occupiedCells.Add(cell);
+
+            if (data.prefabName == buildingRatushaData.prefab.name)
+            {
+                ratushaBuilt = true;
+
+                var ratushaState = placed.GetComponent<BuildingState>();
+                TownhallManager.Instance.SetLevel(ratushaState.currentLevel);
+            }
         }
     }
+
 
     public void SetRatushaBuilt(bool built)
     {

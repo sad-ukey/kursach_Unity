@@ -39,7 +39,9 @@ public class GameSaveManager : MonoBehaviour
                 position = obj.transform.position,
                 rotation = obj.transform.rotation,
                 sizeX = size.sizeX,
-                sizeZ = size.sizeZ
+                sizeZ = size.sizeZ,
+                buildingLevel = obj.GetComponent<BuildingState>()?.currentLevel ?? 1,
+                buildingHealth = obj.GetComponent<BuildingState>()?.currentHealth ?? 100f
             });
         }
 

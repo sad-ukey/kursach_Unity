@@ -13,7 +13,8 @@ public class BuildingInfoUI : MonoBehaviour
     public Text typeText;
     public Button upgradeButton;
 
-    private BuildingInfo currentBuilding;
+    private BuildingState currentState;
+
 
     private void Awake()
     {
@@ -21,29 +22,44 @@ public class BuildingInfoUI : MonoBehaviour
         panel.SetActive(false);
     }
 
-    public void ShowInfo(BuildingInfo info)
+    public void ShowInfo(BuildingState state)
     {
-        currentBuilding = info;
+        panel.SetActive(true);
+        currentState = state;
+        var info = state.template;
 
         titleText.text = info.buildingName;
-        levelText.text = "Уровень: " + info.buildingLevel.ToString();
-        healthText.text = "Здоровье: " + info.buildingHealth.ToString();
-        typeText.text = "Тип: " + info.buildingType;
         descriptionText.text = info.description;
-
-        panel.SetActive(true);
+        levelText.text = "Уровень: " + state.currentLevel;
+        healthText.text = "Здоровье: " + state.currentHealth;
+        typeText.text = "Тип: " + info.buildingType;
     }
 
     public void UpgradeBuilding()
     {
-        if (currentBuilding == null) return;
+        if (currentState == null) return;
 
-        int cost = currentBuilding.upgradeCost;
+        bool isTownhall = currentState.template.buildingName == "Ратуша";
+        int maxLevel = TownhallManager.Instance.maxPossibleLevel; 
+
+        if (currentState.currentLevel >= maxLevel)
+        {
+            Debug.Log("Нельзя улучшить: достигнут максимальный уровень (" + maxLevel + ").");
+            return;
+        }
+
+        int cost = currentState.template.upgradeCost;
         if (CurrencyManager.Instance.HasEnough(cost))
         {
             CurrencyManager.Instance.Spend(cost);
-            currentBuilding.Upgrade();
-            ShowInfo(currentBuilding); 
+            currentState.Upgrade();
+
+            if (isTownhall)
+            {
+                TownhallManager.Instance.SetLevel(currentState.currentLevel);
+            }
+
+            ShowInfo(currentState);
         }
         else
         {
@@ -54,6 +70,6 @@ public class BuildingInfoUI : MonoBehaviour
     public void Close()
     {
         panel.SetActive(false);
-        currentBuilding = null;
+        currentState = null;
     }
 }

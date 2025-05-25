@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -3612485181665533366}
   - component: {fileID: -4721902586703707021}
   - component: {fileID: -6778371451882776309}
+  - component: {fileID: -5809442233099136167}
   m_Layer: 0
   m_Name: Weapon_Crossbow
   m_TagString: Untagged
@@ -122,7 +123,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13cc9039ddb068240834039fbcf96a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: fa72e75bffe40204cb247b24b84bd9c5, type: 2}
 --- !u!114 &-3612485181665533366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,6 +167,21 @@ MonoBehaviour:
   attackRange: 20
   damage: 20
   fireRate: 2
+--- !u!114 &-5809442233099136167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1950169793290186125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77957252cd06914418203d47d6bacfe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  template: {fileID: 11400000, guid: fa72e75bffe40204cb247b24b84bd9c5, type: 2}
+  currentLevel: 1
+  currentHealth: 750
 --- !u!1 &4292511798716753914
 GameObject:
   m_ObjectHideFlags: 0

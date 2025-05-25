@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7598731921280347515}
   - component: {fileID: -3949004180993577898}
   - component: {fileID: -4588610094444070346}
+  - component: {fileID: 6132214028860787374}
   m_Layer: 0
   m_Name: Weapon_Cannon
   m_TagString: Untagged
@@ -101,7 +102,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13cc9039ddb068240834039fbcf96a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: 516443af8f8102a44b57d2e30464b31e, type: 2}
 --- !u!136 &3594012061387439030
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -169,6 +169,21 @@ MonoBehaviour:
   attackRange: 15
   damage: 40
   fireRate: 1
+--- !u!114 &6132214028860787374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3021567495109936401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77957252cd06914418203d47d6bacfe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  template: {fileID: 11400000, guid: 516443af8f8102a44b57d2e30464b31e, type: 2}
+  currentLevel: 1
+  currentHealth: 400
 --- !u!1 &7198351346241917911
 GameObject:
   m_ObjectHideFlags: 0

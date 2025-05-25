@@ -9,6 +9,8 @@ public class PlacedObjectData
     public Quaternion rotation;
     public int sizeX;
     public int sizeZ;
+    public int buildingLevel = 1;
+    public float buildingHealth = 100f;
 }
 
 

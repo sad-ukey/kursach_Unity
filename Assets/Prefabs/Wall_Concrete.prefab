@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4971839548700381112}
   - component: {fileID: 8724113625382740331}
   - component: {fileID: 7825196250622609529}
+  - component: {fileID: -5936082186196185374}
   m_Layer: 6
   m_Name: Wall_Concrete
   m_TagString: Untagged
@@ -99,7 +100,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13cc9039ddb068240834039fbcf96a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: ef785c3256e588041af1aa9403f466c2, type: 2}
 --- !u!65 &4971839548700381112
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -150,3 +150,18 @@ MonoBehaviour:
   type: 3
   health: 800
   isBlockingPath: 0
+--- !u!114 &-5936082186196185374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3600789205380977841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77957252cd06914418203d47d6bacfe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  template: {fileID: 11400000, guid: ef785c3256e588041af1aa9403f466c2, type: 2}
+  currentLevel: 1
+  currentHealth: 800

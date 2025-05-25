@@ -3,19 +3,18 @@ using UnityEngine.EventSystems;
 
 public class BuildingInfoOpener : MonoBehaviour
 {
-    public BuildingInfo data; // скриптовый объект с описанием здания
 
     private void OnMouseDown()
     {
-        if (EventSystem.current.IsPointerOverGameObject())
-            return;
+        if (EventSystem.current.IsPointerOverGameObject()) return;
 
-        if (data == null)
+        var state = GetComponent<BuildingState>();
+        if (state == null)
         {
-            Debug.LogError("BuildingInfo не назначен!");
+            Debug.LogError("BuildingState не найден!");
             return;
         }
 
-        BuildingInfoUI.Instance.ShowInfo(data);
+        BuildingInfoUI.Instance.ShowInfo(state);
     }
 }

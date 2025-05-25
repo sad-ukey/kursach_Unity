@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5305426238582719281}
   - component: {fileID: -1266121555142086355}
   - component: {fileID: 6349386013118550396}
+  - component: {fileID: 2229422414941575661}
   m_Layer: 6
   m_Name: Wall_Segment
   m_TagString: Wall
@@ -99,7 +100,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13cc9039ddb068240834039fbcf96a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: 2445243c960c6ff42b869b9d516fbc12, type: 2}
 --- !u!65 &5305426238582719281
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -150,3 +150,18 @@ MonoBehaviour:
   type: 3
   health: 400
   isBlockingPath: 0
+--- !u!114 &2229422414941575661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4252178595197545656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77957252cd06914418203d47d6bacfe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  template: {fileID: 11400000, guid: 2445243c960c6ff42b869b9d516fbc12, type: 2}
+  currentLevel: 1
+  currentHealth: 400

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6586179949242119618}
   - component: {fileID: -1367448191564669250}
   - component: {fileID: -3221324839659847889}
+  - component: {fileID: 7300598425356774097}
   m_Layer: 0
   m_Name: Building_Ratusha
   m_TagString: Untagged
@@ -99,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13cc9039ddb068240834039fbcf96a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: f3f2a3d0ca6423e40bc3acfa1af797ea, type: 2}
+  state: {fileID: 0}
 --- !u!65 &6586179949242119618
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -150,3 +151,18 @@ MonoBehaviour:
   type: 2
   health: 1000
   isBlockingPath: 0
+--- !u!114 &7300598425356774097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2856051434009249281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77957252cd06914418203d47d6bacfe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  template: {fileID: 11400000, guid: f3f2a3d0ca6423e40bc3acfa1af797ea, type: 2}
+  currentLevel: 1
+  currentHealth: 1000
