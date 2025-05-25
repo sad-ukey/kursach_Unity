@@ -25,5 +25,7 @@ public class BuildingState : MonoBehaviour
 
         currentLevel++;
         currentHealth += template.healthIncrease;
+        AchievementManager.Instance.IncrementProgress("Начинающий инженер", 1);
+        AchievementManager.Instance.IncrementProgress("Эксперт по улучшениям", 1);
     }
 }
