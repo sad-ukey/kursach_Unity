@@ -6,10 +6,12 @@ using System.Collections;
 public class PlacedStructure
 {
     public GameObject obj;
+    public BuildableData data;
 
-    public PlacedStructure(GameObject o)
+    public PlacedStructure(GameObject o, BuildableData d)
     {
         obj = o;
+        data = d;
     }
 }
 
@@ -151,7 +153,7 @@ public class BuildManager : MonoBehaviour
             foreach (var pos in highlightCells)
                 occupiedCells.Add(pos);
 
-            placedObjects.Push(new PlacedStructure(placed));
+            placedObjects.Push(new PlacedStructure(placed, currentData));
             allPlacedObjects.Add(placed);
 
             //счетчик
@@ -319,10 +321,14 @@ public class BuildManager : MonoBehaviour
         Destroy(last.obj);
         allPlacedObjects.Remove(last.obj);
 
-        BuildableData data = GetBuildableDataByPrefab(last.obj.name.Replace("(Clone)", "").Trim());
-        if (data != null && buildCounts.ContainsKey(data))
+        if (last.data != null)
         {
-            buildCounts[data] = Mathf.Max(0, buildCounts[data] - 1);
+            CurrencyManager.Instance.Add(last.data.cost);
+        }
+
+        if (last.data != null && buildCounts.ContainsKey(last.data))
+        {
+            buildCounts[last.data] = Mathf.Max(0, buildCounts[last.data] - 1);
             AchievementManager.Instance.IncrementProgress("Отставить!", 1);
         }
 

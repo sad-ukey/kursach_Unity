@@ -12384,8 +12384,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waves:
   - enemies:
-    - enemyPrefab: {fileID: 8365398879594235551, guid: 9ef7ce80a28f4f246b9d4f7061a8c5a1, type: 3}
-      count: 7
+    - enemyPrefab: {fileID: 6917646981915897111, guid: c40703a65b0a646d5af82acbd1a37d96, type: 3}
+      count: 1
     rewardAmount: 100
   - enemies:
     - enemyPrefab: {fileID: 4459195886868298147, guid: 888983a1e34024641bdfee79d739083e, type: 3}
@@ -12425,9 +12425,6 @@ MonoBehaviour:
     rewardAmount: 1000
   spawnPoints:
   - {fileID: 258144401}
-  - {fileID: 868881650}
-  - {fileID: 867854310}
-  - {fileID: 430281907}
   spawnDelay: 1
 --- !u!1 &1092698494
 GameObject:

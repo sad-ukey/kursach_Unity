@@ -7,9 +7,11 @@ public class DragonAI : MonoBehaviour, damageable
     public float moveSpeed = 6f;
     public float health = 100f;
     public float attackDamage = 30f;
+    public float attackCooldown = 1f; 
 
     private NavMeshAgent agent;
     private Transform currentTarget;
+    private float lastAttackTime;
 
     void Start()
     {
@@ -23,6 +25,7 @@ public class DragonAI : MonoBehaviour, damageable
             return;
         }
 
+        lastAttackTime = -attackCooldown; 
         FindTarget();
     }
 
@@ -42,7 +45,8 @@ public class DragonAI : MonoBehaviour, damageable
 
         agent.SetDestination(currentTarget.position);
 
-        if (Vector3.Distance(transform.position, currentTarget.position) <= 2f)
+        float distance = Vector3.Distance(transform.position, currentTarget.position);
+        if (distance <= 2f && Time.time >= lastAttackTime + attackCooldown)
         {
             Attack();
         }
@@ -83,6 +87,7 @@ public class DragonAI : MonoBehaviour, damageable
         {
             building.TakeDamage(attackDamage);
             Debug.Log("Дракон атакует " + building.type);
+            lastAttackTime = Time.time;
         }
         else
         {

@@ -16,7 +16,6 @@ GameObject:
   - component: {fileID: 5651906566507535101}
   - component: {fileID: 6155977338673986310}
   - component: {fileID: 2810753825894276441}
-  - component: {fileID: -7730177876081379155}
   m_Layer: 6
   m_Name: Wall_Concrete
   m_TagString: Wall
@@ -171,25 +170,6 @@ MonoBehaviour:
   template: {fileID: 11400000, guid: ef785c3256e588041af1aa9403f466c2, type: 2}
   currentLevel: 1
   currentHealth: 800
---- !u!114 &-7730177876081379155
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6494285095950545419}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 1
-  m_Area: 1
-  m_OverrideGenerateLinks: 0
-  m_GenerateLinks: 0
-  m_IgnoreFromBuild: 0
-  m_ApplyToChildren: 1
-  m_AffectedAgents: ffffffff
 --- !u!1001 &1884383640549943487
 PrefabInstance:
   m_ObjectHideFlags: 0

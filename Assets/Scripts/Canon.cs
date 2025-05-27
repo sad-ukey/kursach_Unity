@@ -29,6 +29,9 @@ public class Canon : MonoBehaviour
 
         foreach (GameObject enemy in enemies)
         {
+            if (enemy.name.StartsWith("Dragon 1")) 
+                continue;
+
             float distance = Vector3.Distance(transform.position, enemy.transform.position);
             if (distance <= attackRange)
             {
