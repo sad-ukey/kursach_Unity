@@ -1,0 +1,11 @@
+Model Information:
+* title:	Low Poly Abandoned Building
+* source:	https://sketchfab.com/3d-models/low-poly-abandoned-building-9d1fcad5656042efb63744222208a223
+* author:	Sergi Trojanski (https://sketchfab.com/nathramn)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Low Poly Abandoned Building" (https://sketchfab.com/3d-models/low-poly-abandoned-building-9d1fcad5656042efb63744222208a223) by Sergi Trojanski (https://sketchfab.com/nathramn) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
