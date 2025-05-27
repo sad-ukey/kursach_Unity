@@ -65,6 +65,20 @@ public class AchievementManager : MonoBehaviour
                 achievement.currentProgress = Mathf.Min(progress, achievement.requiredProgress);
                 if (achievement.isCompleted)
                 {
+                    if (achievement.title == "Как похорошела Москва")
+                        CurrencyManager.Instance.Add(500);
+                    if (achievement.title == "Эксперт по улучшениям")
+                        CurrencyManager.Instance.Add(300);
+                    if (achievement.title == "Молодой бизнесмен")
+                        CurrencyManager.Instance.Add(500);
+                    if (achievement.title == "Охотник за головами")
+                        CurrencyManager.Instance.Add(500);
+                    if (achievement.title == "Нас 25 тысяч!")
+                        CurrencyManager.Instance.Add(500);
+                    if (achievement.title == "Z!")
+                        CurrencyManager.Instance.Add(1000);
+                    if (achievement.title == "Ачивхант")
+                        CurrencyManager.Instance.Add(2000);
                     Debug.Log($"Достижение выполнено: {achievement.title}");
                     NotificationManager.Instance?.ShowAchievement(achievement.title);
                 }
@@ -81,6 +95,20 @@ public class AchievementManager : MonoBehaviour
             achievement.currentProgress = Mathf.Min(achievement.currentProgress + increment, achievement.requiredProgress);
             if (achievement.isCompleted)
             {
+                if (achievement.title == "Как похорошела Москва")
+                    CurrencyManager.Instance.Add(500);
+                if (achievement.title == "Эксперт по улучшениям")
+                    CurrencyManager.Instance.Add(300);
+                if (achievement.title == "Молодой бизнесмен")
+                    CurrencyManager.Instance.Add(500);
+                if (achievement.title == "Охотник за головами")
+                    CurrencyManager.Instance.Add(500);
+                if (achievement.title == "Нас 25 тысяч!")
+                    CurrencyManager.Instance.Add(500);
+                if (achievement.title == "Z!")
+                    CurrencyManager.Instance.Add(1000);
+                if (achievement.title == "Ачивхант")
+                    CurrencyManager.Instance.Add(2000);
                 Debug.Log($"Достижение выполнено: {achievement.title}");
                 NotificationManager.Instance?.ShowAchievement(achievement.title);
             }

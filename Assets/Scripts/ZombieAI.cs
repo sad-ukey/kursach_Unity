@@ -18,7 +18,7 @@ public class ZombieAI : MonoBehaviour, damageable
 
     void Start()
     {
-        animator = GetComponent<Animator>(); //�������� ������ � ���������� ��������
+        animator = GetComponent<Animator>(); 
         agent = GetComponent<NavMeshAgent>();
         agent.speed = moveSpeed;
         FindTarget();
@@ -26,7 +26,7 @@ public class ZombieAI : MonoBehaviour, damageable
 
     void Update()
     {
-        animator.SetFloat("Speed", agent.velocity.magnitude); //�������� �������� ������������ ���������
+        animator.SetFloat("Speed", agent.velocity.magnitude); 
         if (currentTarget == null)
         {
             FindTarget();
@@ -36,7 +36,7 @@ public class ZombieAI : MonoBehaviour, damageable
         agent.SetDestination(currentTarget.position);
 
         float distance = Vector3.Distance(transform.position, currentTarget.position);
-        if (distance <= 2f && Time.time >= nextAttackTime)
+        if (distance <= 2.2f && Time.time >= nextAttackTime)
         {
             Attack();
         }
@@ -125,8 +125,7 @@ public class ZombieAI : MonoBehaviour, damageable
 
     void Die()
     {
-        AchievementManager.Instance.IncrementProgress("������� �� ��������", 1);
-        Debug.Log("����� ���������");
+        AchievementManager.Instance.IncrementProgress("Охотник за головами", 1);
         Destroy(gameObject);
     }
 }

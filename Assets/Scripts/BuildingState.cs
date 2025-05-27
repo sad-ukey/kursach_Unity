@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEditor;
 
 public class BuildingState : MonoBehaviour
 {
@@ -27,5 +28,22 @@ public class BuildingState : MonoBehaviour
         currentHealth += template.healthIncrease;
         AchievementManager.Instance.IncrementProgress("Начинающий инженер", 1);
         AchievementManager.Instance.IncrementProgress("Эксперт по улучшениям", 1);
+    }
+
+    public void OnDestroyed()
+    {
+        if (template != null && template.buildingName == "Склад")
+        {
+            int currentMoney = CurrencyManager.Instance.GetCurrentMoney();
+            int loss = Mathf.FloorToInt(currentMoney * 0.1f);
+            CurrencyManager.Instance.Spend(loss);
+            Debug.Log($"Склад уничтожен — потеряно {loss} Р. (10% от средств).");
+        }
+
+        if (template != null && template.buildingName == "Ратуша")
+        {
+            Debug.LogError("Вы проиграли — ратуша уничтожена.");
+            EditorApplication.isPlaying = false;
+        }    
     }
 }

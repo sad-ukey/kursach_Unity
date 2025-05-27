@@ -4030,7 +4030,7 @@ Transform:
   m_GameObject: {fileID: 430281906}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -604.1, y: 7.5, z: -169.2}
+  m_LocalPosition: {x: -626.1, y: 7.5, z: -169.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8048,7 +8048,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 2b91f351e93a441bdaec4e1c5ef9f103, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0
+  m_Volume: 0.036
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -9517,7 +9517,7 @@ Transform:
   m_GameObject: {fileID: 867854309}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -654.2, y: 7.5, z: -221.26}
+  m_LocalPosition: {x: -654.2, y: 7.5, z: -193.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10573,46 +10573,46 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wallData:
-    prefab: {fileID: 4252178595197545656, guid: 2644236b1a68f834eb75edacaff723c7, type: 3}
+    prefab: {fileID: 787046984189573241, guid: 8ce5f05c981f44907904362d8283adef, type: 3}
     sizeX: 1
     sizeZ: 1
-    cost: 10
+    cost: 25
     buildLimit: 50
   concreteWallData:
-    prefab: {fileID: 3600789205380977841, guid: 278dece961e5efc4e8e97e94996f49a2, type: 3}
+    prefab: {fileID: 6494285095950545419, guid: 5983785ce3aa044bf8568f2b458072b3, type: 3}
     sizeX: 1
     sizeZ: 1
-    cost: 20
+    cost: 50
     buildLimit: 50
   buildingXPGeneratorData:
-    prefab: {fileID: 6701993726779014238, guid: 04d9f5e552de9f945a83ca82709708d2, type: 3}
+    prefab: {fileID: 2693233097663053314, guid: 85a1b9b5915fa496a80aa65221825da5, type: 3}
     sizeX: 2
     sizeZ: 2
     cost: 100
     buildLimit: 4
   buildingRatushaData:
-    prefab: {fileID: 2856051434009249281, guid: 8dc256cfd7439954c8956ab293904253, type: 3}
+    prefab: {fileID: 4310850790884404938, guid: 799e6582be16d419d9427bf5856c44f3, type: 3}
     sizeX: 4
     sizeZ: 4
     cost: 0
     buildLimit: -1
   buildingSkladData:
-    prefab: {fileID: 8264722422439249072, guid: 9cbfe9bbcbe8f0641977ce9cd16a2d1e, type: 3}
+    prefab: {fileID: 5651967067606028194, guid: 0202d402d5362441593f72665e52bc57, type: 3}
     sizeX: 2
     sizeZ: 2
-    cost: 100
+    cost: 200
     buildLimit: 2
   weaponCannonData:
-    prefab: {fileID: 3021567495109936401, guid: 13aeab47de0447a4cadff29897985126, type: 3}
+    prefab: {fileID: 5414320702095717167, guid: ee58d850abb6642d8963a7d96a6080de, type: 3}
     sizeX: 1
     sizeZ: 1
-    cost: 150
+    cost: 200
     buildLimit: 3
   weaponCrossbowData:
-    prefab: {fileID: 1950169793290186125, guid: fac78599348b465449440b65b1f7752b, type: 3}
+    prefab: {fileID: 6970630737808027018, guid: 722847b14bc95492d98473fd7c558055, type: 3}
     sizeX: 2
     sizeZ: 2
-    cost: 300
+    cost: 500
     buildLimit: 2
   highlightPrefab: {fileID: 2832768786067973650, guid: a6412c543ad8b37499e810ed462d3cf6, type: 3}
   gridLayer:
@@ -10859,8 +10859,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 514653664}
   m_HandleRect: {fileID: 514653663}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 0.9999998
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -11728,7 +11728,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u0411\u0435\u0442\u043E\u043D\u043D\u044B\u0439 \u0437\u0430\u0431\u043E\u0440"
+  m_Text: "\u0421\u0442\u0435\u043D\u0430"
 --- !u!222 &1052820580
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -12384,13 +12384,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waves:
   - enemies:
-    - enemyPrefab: {fileID: 6917646981915897111, guid: c40703a65b0a646d5af82acbd1a37d96, type: 3}
-      count: 1
+    - enemyPrefab: {fileID: 8365398879594235551, guid: 9ef7ce80a28f4f246b9d4f7061a8c5a1, type: 3}
+      count: 7
+    rewardAmount: 100
   - enemies:
     - enemyPrefab: {fileID: 4459195886868298147, guid: 888983a1e34024641bdfee79d739083e, type: 3}
       count: 2
+    - enemyPrefab: {fileID: 8814193988793571511, guid: d0c5c097e30673e4cb6ac7439639e7cb, type: 3}
+      count: 4
+    - enemyPrefab: {fileID: 8365398879594235551, guid: 9ef7ce80a28f4f246b9d4f7061a8c5a1, type: 3}
+      count: 5
+    rewardAmount: 200
+  - enemies:
+    - enemyPrefab: {fileID: 5700305516376265684, guid: cc10fae133bae67479de25f2f94b6cc7, type: 3}
+      count: 20
+    rewardAmount: 300
+  - enemies:
+    - enemyPrefab: {fileID: 4459195886868298147, guid: 888983a1e34024641bdfee79d739083e, type: 3}
+      count: 2
+    - enemyPrefab: {fileID: 8814193988793571511, guid: d0c5c097e30673e4cb6ac7439639e7cb, type: 3}
+      count: 5
+    - enemyPrefab: {fileID: 8365398879594235551, guid: 9ef7ce80a28f4f246b9d4f7061a8c5a1, type: 3}
+      count: 5
+    - enemyPrefab: {fileID: 5700305516376265684, guid: cc10fae133bae67479de25f2f94b6cc7, type: 3}
+      count: 5
+    - enemyPrefab: {fileID: 7177587151938778662, guid: 17d97e002c6cf40be9900c53350b28ba, type: 3}
+      count: 2
+    rewardAmount: 200
+  - enemies:
+    - enemyPrefab: {fileID: 4459195886868298147, guid: 888983a1e34024641bdfee79d739083e, type: 3}
+      count: 4
+    - enemyPrefab: {fileID: 8814193988793571511, guid: d0c5c097e30673e4cb6ac7439639e7cb, type: 3}
+      count: 8
+    - enemyPrefab: {fileID: 8365398879594235551, guid: 9ef7ce80a28f4f246b9d4f7061a8c5a1, type: 3}
+      count: 10
+    - enemyPrefab: {fileID: 6917646981915897111, guid: c40703a65b0a646d5af82acbd1a37d96, type: 3}
+      count: 1
+    - enemyPrefab: {fileID: 5700305516376265684, guid: cc10fae133bae67479de25f2f94b6cc7, type: 3}
+      count: 5
+    rewardAmount: 1000
   spawnPoints:
   - {fileID: 258144401}
+  - {fileID: 868881650}
+  - {fileID: 867854310}
+  - {fileID: 430281907}
   spawnDelay: 1
 --- !u!1 &1092698494
 GameObject:
@@ -14026,7 +14063,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u0413\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440 \u043E\u043F\u044B\u0442\u0430"
+  m_Text: "\u0413\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440 "
 --- !u!222 &1272084820
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -19477,7 +19514,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6096e60b29780344f88c7619d13720ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentMoney: 5000
+  currentMoney: 1000
   moneyText: {fileID: 2044891774}
 --- !u!4 &1812516715
 Transform:
@@ -22544,7 +22581,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 1, g: 1, b: 0.19607843, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -22590,7 +22627,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -20, y: -20}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 259.7219, y: 50}
   m_Pivot: {x: 1, y: 1}
 --- !u!1001 &2047694331
 PrefabInstance:

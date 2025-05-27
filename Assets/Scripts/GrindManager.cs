@@ -11,7 +11,7 @@ public class GridManager : MonoBehaviour
     {
         Gizmos.color = Color.green;
         
-        // Вертикальные линии (ось Z)
+        // (ось Z)
         for (int x = 0; x <= gridWidth; x++)
         {
             Vector3 start = gridOrigin + new Vector3(x * cellSize, 0, 0);
@@ -19,7 +19,7 @@ public class GridManager : MonoBehaviour
             Gizmos.DrawLine(start, end);
         }
         
-        // Горизонтальные линии (ось X)
+        // (ось X)
         for (int z = 0; z <= gridHeight; z++)
         {
             Vector3 start = gridOrigin + new Vector3(0, 0, z * cellSize);

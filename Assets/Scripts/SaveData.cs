@@ -26,6 +26,7 @@ public class SaveData
 {
     public int savedMoney = 0;
     public bool isRatushaBuilt = false;
+    public int currentWaveIndex = 0;
 
     public List<PlacedObjectData> placedObjects = new List<PlacedObjectData>();
 

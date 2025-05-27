@@ -4,7 +4,6 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class GoblinAI : MonoBehaviour, damageable
 {
-    // ��������������
     public float moveSpeed = 5f;
     public float health = 50f;
     public float attackDamage = 20f;
@@ -16,8 +15,8 @@ public class GoblinAI : MonoBehaviour, damageable
 
     private readonly Building.BuildingType[] priorityOrder =
     {
-        Building.BuildingType.Economic,   // ������� ���������
-        Building.BuildingType.TownHall,   // ��������� ����
+        Building.BuildingType.Economic,   
+        Building.BuildingType.TownHall,  
         Building.BuildingType.Defensive
     };
 
@@ -30,7 +29,7 @@ public class GoblinAI : MonoBehaviour, damageable
         if (!agent.isOnNavMesh)
         {
             Debug.LogError("������ �� ��������� �� NavMesh! ����������� ��� �� ������������� ����.");
-            enabled = false; // ��������� ������, ����� �������� ������
+            enabled = false; 
             return;
         }
 
@@ -40,24 +39,20 @@ public class GoblinAI : MonoBehaviour, damageable
     void Update()
     {
         animator.SetFloat("Speed", agent.velocity.magnitude);
-        // ��������: ���� ���� ���, �������� � �����
         if (currentTarget == null)
         {
             FindTarget();
             return;
         }
 
-        // ��������: ����� ������� � �� NavMesh
         if (agent == null || !agent.isOnNavMesh)
         {
             Debug.LogWarning("NavMeshAgent �� ����� ��� ������ �� ����� �� NavMesh");
             return;
         }
 
-        // �������� � ����
         agent.SetDestination(currentTarget.position);
 
-        // �������� ��������� �� ����
         if (Vector3.Distance(transform.position, currentTarget.position) <= 2f)
         {
             Attack();
@@ -67,11 +62,6 @@ public class GoblinAI : MonoBehaviour, damageable
     void FindTarget()
     {
         currentTarget = PriorityTargetSystem.GetPriorityTarget(transform, priorityOrder);
-
-        if (currentTarget == null)
-        {
-            //Debug.LogWarning("������ �� ����� ������������ ����.");
-        }
     }
 
     void Attack()
@@ -88,7 +78,7 @@ public class GoblinAI : MonoBehaviour, damageable
         else
         {
             Debug.Log("���� ���������� ��� ���������. ����� ����� ����.");
-            FindTarget(); // ���� ����� ����, ���� ������ ����������
+            FindTarget(); 
         }
     }
 
@@ -106,7 +96,7 @@ public class GoblinAI : MonoBehaviour, damageable
     void Die()
     {
         animator.SetTrigger("Death");
-        AchievementManager.Instance.IncrementProgress("������� �� ��������", 1);
+        AchievementManager.Instance.IncrementProgress("Охотник за головами", 1);
         Debug.Log("������ �����.");
         Destroy(gameObject);
     }

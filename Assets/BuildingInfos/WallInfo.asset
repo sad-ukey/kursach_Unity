@@ -20,4 +20,4 @@ MonoBehaviour:
   buildingType: "\u0421\u0442\u0435\u043D\u044B"
   buildingHealth: 800
   upgradeCost: 50
-  healthIncrease: 25
+  healthIncrease: 80

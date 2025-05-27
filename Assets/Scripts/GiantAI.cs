@@ -4,7 +4,6 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class GiantAI : MonoBehaviour, damageable
 {
-    // ���������
     public float moveSpeed = 3f;
     public float attackRange = 2f;
     public float attackDamage = 40f;
@@ -15,8 +14,8 @@ public class GiantAI : MonoBehaviour, damageable
     private Animator animator;
     private readonly Building.BuildingType[] priorityOrder =
     {
-        Building.BuildingType.Defensive, // ������� ���������
-        Building.BuildingType.TownHall,  // ��������� ����
+        Building.BuildingType.Defensive, 
+        Building.BuildingType.TownHall,  
         Building.BuildingType.Economic
     };
 
@@ -75,8 +74,8 @@ public class GiantAI : MonoBehaviour, damageable
     void Die()
     {
         animator.SetTrigger("Death");
-        AchievementManager.Instance.IncrementProgress("������� �� ��������", 1);
-        Debug.Log("������ �����.");
+        AchievementManager.Instance.IncrementProgress("Охотник за головами", 1);
+        Debug.Log("������ � ����.");
         Destroy(gameObject);
-    }
+    }   
 }

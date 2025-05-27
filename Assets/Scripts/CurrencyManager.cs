@@ -8,6 +8,9 @@ public class CurrencyManager : MonoBehaviour
     public int currentMoney = 100;
     public Text moneyText;
 
+    private int baseMoneyLimit = 1000;
+    private int storagePerWarehouse = 5000;
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -32,7 +35,9 @@ public class CurrencyManager : MonoBehaviour
 
     public void Add(int amount)
     {
+
         currentMoney += amount;
+        currentMoney = Mathf.Min(currentMoney, GetMoneyLimit());
         UpdateUI();
     }
 
@@ -40,7 +45,7 @@ public class CurrencyManager : MonoBehaviour
     {
         if (moneyText != null)
         {
-            moneyText.text = "₽ " + currentMoney.ToString();
+            moneyText.text = "₽ " + currentMoney.ToString() + " / " + GetMoneyLimit();
         }
 
         if (AchievementManager.Instance != null)
@@ -52,6 +57,7 @@ public class CurrencyManager : MonoBehaviour
     public void LoadMoney(int amount)
     {
         currentMoney = amount;
+        currentMoney = Mathf.Min(currentMoney, GetMoneyLimit());
         UpdateUI();
     }
 
@@ -59,4 +65,24 @@ public class CurrencyManager : MonoBehaviour
     {
         return currentMoney;
     }
+
+    public int GetMoneyLimit()
+    {
+        return baseMoneyLimit + CountWarehouses() * storagePerWarehouse;
+    }
+
+    private int CountWarehouses()
+    {
+        int count = 0;
+        foreach (var building in FindObjectsOfType<BuildingState>())
+        {
+            if (building.template != null && building.template.buildingName == "Склад")
+            {
+                count++;
+            }
+        }
+        return count;
+    }
 }
+
+   

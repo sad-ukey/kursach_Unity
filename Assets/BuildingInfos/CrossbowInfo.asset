@@ -18,6 +18,6 @@ MonoBehaviour:
     \u0446\u0435\u043B\u0435\u0439"
   buildingLevel: 1
   buildingType: "\u041E\u0431\u043E\u0440\u043E\u043D\u0430"
-  buildingHealth: 100
-  upgradeCost: 50
-  healthIncrease: 25
+  buildingHealth: 300
+  upgradeCost: 300
+  healthIncrease: 100

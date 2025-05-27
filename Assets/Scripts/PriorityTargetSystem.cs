@@ -8,7 +8,6 @@ public static class PriorityTargetSystem
         var allBuildings = GameObject.FindObjectsOfType<Building>()
             .Where(b => b.health > 0);
 
-        // Сначала ищем цели по приоритету
         foreach (var buildingType in priorityOrder)
         {
             var target = allBuildings
@@ -18,7 +17,6 @@ public static class PriorityTargetSystem
 
             if (target != null)
             {
-                // Для заборов - дополнительная проверка
                 if (target.type == Building.BuildingType.Fence && !target.isBlockingPath)
                     continue;
 

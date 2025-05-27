@@ -15,6 +15,7 @@ public class WaveSpawner : MonoBehaviour
     public class EnemyWave
     {
         public List<EnemyInfo> enemies = new List<EnemyInfo>();
+        public int rewardAmount = 0;
     }
 
     public List<EnemyWave> waves = new List<EnemyWave>();
@@ -37,6 +38,8 @@ public class WaveSpawner : MonoBehaviour
             return;
         }
 
+        GameSaveManager gsm = FindObjectOfType<GameSaveManager>();
+        gsm.SaveWaveCheckpoint(currentWaveIndex);
 
         StartCoroutine(SpawnWaveCoroutine(waves[currentWaveIndex]));
         currentWaveIndex++;
@@ -70,7 +73,7 @@ public class WaveSpawner : MonoBehaviour
     {
         aliveEnemies.Remove(enemy);
 
-        if (currentWaveIndex == 1 && aliveEnemies.Count==0)
+        if (currentWaveIndex == 1 && aliveEnemies.Count == 0)
         {
             AchievementManager.Instance.IncrementProgress("Твердая оборона", 1);
         }
@@ -84,5 +87,51 @@ public class WaveSpawner : MonoBehaviour
         {
             AchievementManager.Instance.IncrementProgress("Z!", 1);
         }
+
+        if (aliveEnemies.Count == 0)
+        {
+            // Награда за волну (основная)
+            int previousWaveIndex = currentWaveIndex - 1;
+            if (previousWaveIndex >= 0 && previousWaveIndex < waves.Count)
+            {
+                int waveReward = waves[previousWaveIndex].rewardAmount;
+                CurrencyManager.Instance.Add(waveReward);
+            }
+
+            // Доп. награда за каждый "Сборщик"
+            int collectorCount = 0;
+            foreach (var building in FindObjectsOfType<BuildingState>())
+            {
+                if (building.template.buildingName == "Сборщик")
+                {
+                    collectorCount++;
+                }
+            }
+
+            int collectorReward = collectorCount * 200;
+            if (collectorReward > 0)
+            {
+                CurrencyManager.Instance.Add(collectorReward);
+                Debug.Log($"Награда за {collectorCount} сборщиков: +{collectorReward}Р");
+            }
+
+            GameSaveManager gsm = FindObjectOfType<GameSaveManager>();
+            gsm.LoadWaveCheckpoint();
+        }
+    }
+
+    public int GetCurrentWaveIndex()
+    {
+        return currentWaveIndex;
+    }
+
+    public void SetCurrentWaveIndex(int index)
+    {
+        currentWaveIndex = index;
+    }
+
+    public bool IsWaveActive()
+    {
+        return isSpawning || aliveEnemies.Count > 0;
     }
 }

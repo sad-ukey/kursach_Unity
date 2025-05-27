@@ -17,11 +17,9 @@ public class DefendHealth : MonoBehaviour
 
     void DestroyBuilding()
     {
-        // Эффект разрушения
         if (destroyEffect != null)
             Instantiate(destroyEffect, transform.position, Quaternion.identity);
 
-        // Уничтожение объекта
         Destroy(gameObject);
     }
 }

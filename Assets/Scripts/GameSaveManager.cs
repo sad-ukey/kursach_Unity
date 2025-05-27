@@ -21,9 +21,66 @@ public class GameSaveManager : MonoBehaviour
         yield return null;
     }
 
+    private SaveData waveBackupData;
+
+    public void SaveWaveCheckpoint(int currentWaveIndex)
+    {
+        waveBackupData = new SaveData();
+        waveBackupData.savedMoney = CurrencyManager.Instance.GetCurrentMoney();
+        waveBackupData.currentWaveIndex = currentWaveIndex;
+
+        foreach (var obj in buildManager.GetAllPlacedObjects())
+        {
+            var size = obj.GetComponent<BuildableSize>();
+            if (size == null) continue;
+
+            waveBackupData.placedObjects.Add(new PlacedObjectData
+            {
+                prefabName = obj.name.Replace("(Clone)", "").Trim(),
+                position = obj.transform.position,
+                rotation = obj.transform.rotation,
+                sizeX = size.sizeX,
+                sizeZ = size.sizeZ,
+                buildingLevel = obj.GetComponent<BuildingState>()?.currentLevel ?? 1,
+                buildingHealth = obj.GetComponent<BuildingState>()?.currentHealth ?? 100f
+            });
+        }
+
+        Debug.Log("Сохранена контрольная точка волны: " + currentWaveIndex);
+    }
+
+    public void LoadWaveCheckpoint()
+    {
+        if (waveBackupData == null)
+        {
+            Debug.LogWarning("Контрольная точка волны не найдена.");
+            return;
+        }
+
+        buildManager.ClearBuildData();
+
+        foreach (var data in waveBackupData.placedObjects)
+        {
+            buildManager.PlaceLoadedObject(data);
+        }
+
+        Debug.Log("Загружено состояние базы после волны " + waveBackupData.currentWaveIndex);
+    }
     public void SaveGame()
     {
+        var waveSpawner = FindObjectOfType<WaveSpawner>();
+        if (waveSpawner != null && waveSpawner.IsWaveActive())
+        {
+            Debug.LogWarning("Нельзя сохранить игру во время боя.");
+            return;
+        }
         SaveData save = new SaveData();
+
+
+        if (waveSpawner != null)
+        {
+            save.currentWaveIndex = waveSpawner.GetCurrentWaveIndex();
+        }
 
         save.savedMoney = CurrencyManager.Instance.GetCurrentMoney();
         save.isRatushaBuilt = buildManager.IsRatushaBuilt();
@@ -53,6 +110,12 @@ public class GameSaveManager : MonoBehaviour
 
     public void LoadGame()
     {
+        var waveSpawner = FindObjectOfType<WaveSpawner>();
+        if (waveSpawner != null && waveSpawner.IsWaveActive())
+        {
+            Debug.LogWarning("Нельзя загрузить во время активной волны.");
+            return;
+        }
         SaveData save = SaveSystem.Load();
         if (save == null)
         {
@@ -74,6 +137,11 @@ public class GameSaveManager : MonoBehaviour
         }
 
         buildManager.SetRatushaBuilt(save.isRatushaBuilt);
+
+        if (waveSpawner != null)
+        {
+            waveSpawner.SetCurrentWaveIndex(save.currentWaveIndex);
+        }
 
         Debug.Log("Игра загружена.");
     }

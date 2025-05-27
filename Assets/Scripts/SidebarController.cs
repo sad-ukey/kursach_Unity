@@ -30,25 +30,20 @@ public class SidebarController : MonoBehaviour
         openPos = sidebar.anchoredPosition;
         closedPos = new Vector2(-sidebar.rect.width, openPos.y);
 
-        // 1) скрываем панель и кнопку «✖»
         sidebar.anchoredPosition = closedPos;
         hideSidebarButton.gameObject.SetActive(false);
 
-        // 2) кнопка «Меню строительства» видна
         openMenuButton.gameObject.SetActive(true);
 
-        // 3) подписываемся на нажатия
         openMenuButton.onClick.AddListener(ToggleSidebar);
         hideSidebarButton.onClick.AddListener(ToggleSidebar);
 
-        // 4) находим BuildManager
         buildManager = FindObjectOfType<BuildManager>();
         if (buildManager == null)
         {
             Debug.LogError("BuildManager не найден на сцене!");
         }
 
-        // 5) назначаем действия на кнопки
         if (ratushaButton != null)
             ratushaButton.onClick.AddListener(() => buildManager.StartRatushaPlacement());
 
@@ -64,7 +59,7 @@ public class SidebarController : MonoBehaviour
         if (crossbowButton != null)
             crossbowButton.onClick.AddListener(() => buildManager.StartCrossbowPlacement());
 
-        // 6) обновляем состояние кнопок в зависимости от наличия ратуши
+
         UpdateBuildingButtons();
 
         ShowZabory();

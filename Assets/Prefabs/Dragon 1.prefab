@@ -888,7 +888,7 @@ Transform:
   m_GameObject: {fileID: 6917646981915897111}
   serializedVersion: 2
   m_LocalRotation: {x: 0.000000017660176, y: 0.7153839, z: 0.00000003669943, w: 0.6987317}
-  m_LocalPosition: {x: 3.12, y: 7.23, z: -18.529999}
+  m_LocalPosition: {x: 2, y: 1.13, z: -16.86}
   m_LocalScale: {x: 4.376, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1030,7 +1030,7 @@ NavMeshAgent:
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
-  m_WalkableMask: 4294967295
+  m_WalkableMask: 9
   m_ObstacleAvoidanceType: 4
 --- !u!95 &5420339184415467197
 Animator:
@@ -1177,7 +1177,7 @@ Transform:
   m_GameObject: {fileID: 7807435293768601041}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 10, z: 0}
   m_LocalScale: {x: 1, y: 4.5054145, z: 7.289844}
   m_ConstrainProportionsScale: 0
   m_Children:

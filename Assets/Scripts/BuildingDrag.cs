@@ -55,7 +55,6 @@ public class BuildingDrag : MonoBehaviour
             return;
         }
 
-        // 6) Снаппинг по центру ячейки с учётом высоты
         Vector3 cellCenter = gridManager.GetWorldPosition(gridPos);
         transform.position = new Vector3(
             cellCenter.x,
@@ -63,7 +62,7 @@ public class BuildingDrag : MonoBehaviour
             cellCenter.z
         );
 
-        // 7) Фиксация по левому клику
+        // 6) Фиксация по левому клику
 
 
         if (Input.GetMouseButtonDown(0))
@@ -86,7 +85,6 @@ public class BuildingDrag : MonoBehaviour
         }
     }
 
-    // Пока заглушка: всегда true. Позже можно использовать Physics.OverlapBox и хранить занятые ячейки.
     private bool IsCellFree(Vector2Int gridPos)
     {
         return true;

@@ -15,6 +15,12 @@ public class Building : MonoBehaviour
 
         if (health <= 0)
         {
+            var state = GetComponent<BuildingState>();
+            if (state != null)
+            {
+                state.OnDestroyed();
+            }
+
             Destroy(gameObject);
         }
     }

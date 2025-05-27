@@ -7,10 +7,10 @@ public class ArcherAI : MonoBehaviour, damageable
 {
     [Header("���������")]
     public float moveSpeed = 3.5f;
-    public float attackRange = 8f;      // ������� ��������� �����
-    public float attackDamage = 25f;    // ������� ����
+    public float attackRange = 8f;      
+    public float attackDamage = 25f;    
     public float attackCooldown = 2f;
-    public float health = 60f;          // ����� ��������
+    public float health = 60f;          
 
     [Header("������")]
     public GameObject attackEffect;
@@ -27,7 +27,7 @@ public class ArcherAI : MonoBehaviour, damageable
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         agent.speed = moveSpeed;
-        agent.stoppingDistance = attackRange * 0.9f; // ������������ ������ � ����
+        agent.stoppingDistance = attackRange * 0.9f; 
 
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
@@ -47,10 +47,8 @@ public class ArcherAI : MonoBehaviour, damageable
             return;
         }
 
-        // �������� � ����
         agent.SetDestination(currentTarget.position);
 
-        // �������� ��������� ��� �����
         float distance = Vector3.Distance(transform.position, currentTarget.position);
         if (distance <= attackRange && Time.time - lastAttackTime >= attackCooldown)
         {
@@ -61,20 +59,17 @@ public class ArcherAI : MonoBehaviour, damageable
 
     void FindTarget()
     {
-        // �������� ��� ���������, ����� ����
         var buildings = GameObject.FindObjectsOfType<Building>()
             .Where(b => b.type != Building.BuildingType.Fence && b.health > 0)
             .OrderBy(b => Vector3.Distance(transform.position, b.transform.position))
             .ToArray();
 
-        // ���� ���� ������� ��������� - ������� ���������
         if (buildings.Length > 0)
         {
             currentTarget = buildings[0].transform;
             return;
         }
 
-        // ���� ������� �������� ��� - ���� �����, ����������� ����
         var blockingWalls = GameObject.FindObjectsOfType<Building>()
             .Where(b => b.type == Building.BuildingType.Fence &&
                        b.health > 0 &&
@@ -90,19 +85,16 @@ public class ArcherAI : MonoBehaviour, damageable
 
     void Attack()
     {
-        // ������ ����� (��� ��� ������)
         if (attackEffect != null)
         {
             Instantiate(attackEffect, transform.position, Quaternion.identity);
         }
 
-        // ���� �����
         if (attackSound != null)
         {
             audioSource.PlayOneShot(attackSound);
         }
 
-        // ��������� �����
         if (currentTarget != null)
         {
             animator.SetTrigger("Attack");
@@ -128,7 +120,7 @@ public class ArcherAI : MonoBehaviour, damageable
     {
         animator.SetTrigger("Death");
         Destroy(gameObject);
-        AchievementManager.Instance.IncrementProgress("������� �� ��������", 1);
+        AchievementManager.Instance.IncrementProgress("Охотник за головами", 1);
     }
 
     void OnDrawGizmosSelected()

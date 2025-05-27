@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
-using System.Linq; // Добавляем это пространство имен для LINQ
+using System.Linq; 
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class BombSkeletonAI : MonoBehaviour, damageable
@@ -52,11 +52,10 @@ public class BombSkeletonAI : MonoBehaviour, damageable
 
     void FindTarget()
     {
-        // Используем ToArray() для преобразования в массив перед Where
         var walls = GameObject.FindObjectsOfType<Building>()
             .Where(b => b.type == Building.BuildingType.Fence && b.health > 0)
             .OrderBy(b => Vector3.Distance(transform.position, b.transform.position))
-            .ToArray(); // Явное преобразование в массив
+            .ToArray(); 
 
         if (walls.Length > 0)
         {

@@ -16,10 +16,9 @@ public class FenceHealth : Building
         health = baseHealth;
     }
 
-    // Теперь override работает корректно
     public override void TakeDamage(float damage)
     {
-        base.TakeDamage(damage); // Вызываем базовую логику
+        base.TakeDamage(damage); 
 
         if (health <= 0 && destroyEffect != null)
         {
