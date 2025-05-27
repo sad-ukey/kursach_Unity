@@ -1,0 +1,11 @@
+Model Information:
+* title:	Dragon low poly animated
+* source:	https://sketchfab.com/3d-models/dragon-low-poly-animated-cd4a9470c57a4af18272e2119d4b5337
+* author:	Karevus (https://sketchfab.com/kaliukh)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Dragon low poly animated" (https://sketchfab.com/3d-models/dragon-low-poly-animated-cd4a9470c57a4af18272e2119d4b5337) by Karevus (https://sketchfab.com/kaliukh) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)

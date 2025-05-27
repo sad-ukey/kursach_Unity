@@ -8527,10 +8527,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waves:
   - enemies:
-    - enemyPrefab: {fileID: 7900678545700060247, guid: aa065044b266c3e4e9152b6d6b2fa0a0, type: 3}
+    - enemyPrefab: {fileID: 6917646981915897111, guid: c40703a65b0a646d5af82acbd1a37d96, type: 3}
       count: 1
   - enemies:
-    - enemyPrefab: {fileID: 6212764690653475876, guid: 295b73f879465d84a93165b32f60a8d1, type: 3}
+    - enemyPrefab: {fileID: 4459195886868298147, guid: 888983a1e34024641bdfee79d739083e, type: 3}
       count: 2
   spawnPoints:
   - {fileID: 258144401}
