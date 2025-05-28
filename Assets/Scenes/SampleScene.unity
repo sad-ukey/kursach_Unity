@@ -10573,13 +10573,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wallData:
-    prefab: {fileID: 787046984189573241, guid: 8ce5f05c981f44907904362d8283adef, type: 3}
+    prefab: {fileID: 2592518424258759602, guid: f3987241ddc398444b5c921a90c3cdfb, type: 3}
     sizeX: 1
     sizeZ: 1
     cost: 25
     buildLimit: 50
   concreteWallData:
-    prefab: {fileID: 6494285095950545419, guid: 5983785ce3aa044bf8568f2b458072b3, type: 3}
+    prefab: {fileID: 2592518424258759602, guid: d070b8a428768db499bb773870702cea, type: 3}
     sizeX: 1
     sizeZ: 1
     cost: 50
@@ -12384,8 +12384,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waves:
   - enemies:
-    - enemyPrefab: {fileID: 6917646981915897111, guid: c40703a65b0a646d5af82acbd1a37d96, type: 3}
-      count: 1
+    - enemyPrefab: {fileID: 8365398879594235551, guid: 9ef7ce80a28f4f246b9d4f7061a8c5a1, type: 3}
+      count: 6
     rewardAmount: 100
   - enemies:
     - enemyPrefab: {fileID: 4459195886868298147, guid: 888983a1e34024641bdfee79d739083e, type: 3}
@@ -12425,6 +12425,9 @@ MonoBehaviour:
     rewardAmount: 1000
   spawnPoints:
   - {fileID: 258144401}
+  - {fileID: 867854310}
+  - {fileID: 868881650}
+  - {fileID: 430281907}
   spawnDelay: 1
 --- !u!1 &1092698494
 GameObject:
