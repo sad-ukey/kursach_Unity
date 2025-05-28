@@ -44,7 +44,7 @@ public class BombSkeletonAI : MonoBehaviour, damageable
             agent.SetDestination(currentTarget.position);
         }
 
-        if (Vector3.Distance(transform.position, currentTarget.position) <= 1f)
+        if (Vector3.Distance(transform.position, currentTarget.position) <= 2f)
         {
             Explode();
         }

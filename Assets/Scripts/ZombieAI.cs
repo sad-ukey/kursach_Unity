@@ -4,111 +4,159 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class ZombieAI : MonoBehaviour, damageable
 {
-    [Header("�������������� �����")]
+    [Header("Zombie Settings")]
     public float moveSpeed = 3.5f;
     public float health = 100f;
     public float attackDamage = 15f;
-
-    public float attackCooldown = 1.5f; 
-    private float nextAttackTime = 0f;  
+    public float attackCooldown = 1.5f;
+    public float detectionRange = 50f;
+    public float pathUpdateInterval = 0.5f;
 
     private NavMeshAgent agent;
-    private Transform currentTarget;
     private Animator animator;
+    private Building targetBuilding;
+    private Building blockingFence;
+    private float nextAttackTime;
+    private float lastPathUpdateTime;
+    private bool hasDirectPath;
 
     void Start()
     {
-        animator = GetComponent<Animator>(); 
+        animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         agent.speed = moveSpeed;
-        FindTarget();
+        FindNewTarget();
     }
 
     void Update()
     {
-        animator.SetFloat("Speed", agent.velocity.magnitude); 
-        if (currentTarget == null)
+        animator.SetFloat("Speed", agent.velocity.magnitude);
+
+        if (targetBuilding == null)
         {
-            FindTarget();
+            FindNewTarget();
             return;
         }
 
-        agent.SetDestination(currentTarget.position);
-
-        float distance = Vector3.Distance(transform.position, currentTarget.position);
-        if (distance <= 2.2f && Time.time >= nextAttackTime)
+        // Обновление пути с интервалом
+        if (Time.time - lastPathUpdateTime > pathUpdateInterval)
         {
-            Attack();
+            UpdateNavigation();
+            lastPathUpdateTime = Time.time;
+        }
+
+        // Логика атаки
+        if (blockingFence != null &&
+            Vector3.Distance(transform.position, blockingFence.transform.position) <= 2.2f &&
+            Time.time >= nextAttackTime)
+        {
+            Attack(blockingFence);
+        }
+        else if (hasDirectPath &&
+                 Vector3.Distance(transform.position, targetBuilding.transform.position) <= 2.2f &&
+                 Time.time >= nextAttackTime)
+        {
+            Attack(targetBuilding);
         }
     }
 
-    void FindTarget()
+    void FindNewTarget()
     {
-        Building[] allBuildings = FindObjectsOfType<Building>();
+        // Ищем ближайшее здание (не забор)
+        Building closestBuilding = null;
         float closestDistance = Mathf.Infinity;
-        Building bestTarget = null;
 
-        foreach (var building in allBuildings)
+        foreach (Building building in FindObjectsOfType<Building>())
         {
             if (building.type == Building.BuildingType.Fence) continue;
-            if (!IsPathReachable(building.transform.position)) continue;
 
             float distance = Vector3.Distance(transform.position, building.transform.position);
-            if (distance < closestDistance)
+            if (distance < closestDistance && distance <= detectionRange)
             {
                 closestDistance = distance;
-                bestTarget = building;
+                closestBuilding = building;
             }
         }
 
-        if (bestTarget == null)
-        {
-            foreach (var building in allBuildings)
-            {
-                if (building.type != Building.BuildingType.Fence || !building.isBlockingPath) continue;
-                if (!IsPathReachable(building.transform.position)) continue;
+        targetBuilding = closestBuilding;
+        blockingFence = null;
+        UpdateNavigation();
+    }
 
-                float distance = Vector3.Distance(transform.position, building.transform.position);
-                if (distance < closestDistance)
+    void UpdateNavigation()
+    {
+        if (targetBuilding == null) return;
+
+        // Проверяем прямой путь к зданию
+        NavMeshPath path = new NavMeshPath();
+        hasDirectPath = agent.CalculatePath(targetBuilding.transform.position, path) &&
+                        path.status == NavMeshPathStatus.PathComplete;
+
+        if (hasDirectPath)
+        {
+            // Прямой путь доступен
+            blockingFence = null;
+            agent.SetDestination(targetBuilding.transform.position);
+        }
+        else
+        {
+            // Ищем ближайший забор к зданию
+            FindBlockingFence();
+
+            if (blockingFence != null)
+            {
+                agent.SetDestination(blockingFence.transform.position);
+            }
+            else
+            {
+                // Если забор не найден, все равно пытаемся идти к зданию
+                agent.SetDestination(targetBuilding.transform.position);
+            }
+        }
+    }
+
+    void FindBlockingFence()
+    {
+        float closestDistance = Mathf.Infinity;
+        blockingFence = null;
+
+        foreach (Building building in FindObjectsOfType<Building>())
+        {
+            if (building.type != Building.BuildingType.Fence || !building.isBlockingPath) continue;
+
+            // Ищем заборы в радиусе 10м от здания
+            float distanceToBuilding = Vector3.Distance(building.transform.position,
+                                                     targetBuilding.transform.position);
+            float distanceToZombie = Vector3.Distance(building.transform.position,
+                                                    transform.position);
+
+            if (distanceToBuilding < 10f && distanceToZombie < detectionRange)
+            {
+                if (distanceToBuilding < closestDistance)
                 {
-                    closestDistance = distance;
-                    bestTarget = building;
+                    closestDistance = distanceToBuilding;
+                    blockingFence = building;
                 }
             }
         }
-
-        if (bestTarget != null)
-        {
-            currentTarget = bestTarget.transform;
-        }
     }
 
-    bool IsPathReachable(Vector3 targetPosition)
+    void Attack(Building target)
     {
-        NavMeshPath path = new NavMeshPath();
-        if (agent.CalculatePath(targetPosition, path))
+        animator.SetTrigger("Attack");
+        target.TakeDamage(attackDamage);
+        nextAttackTime = Time.time + attackCooldown;
+
+        if (target.IsDestroyed())
         {
-            return path.status == NavMeshPathStatus.PathComplete;
-        }
-        return false;
-    }
-
-    void Attack()
-    {
-        if (currentTarget == null) return;
-
-        Building building = currentTarget.GetComponent<Building>();
-        if (building != null)
-        {
-            animator.SetTrigger("Attack");
-            building.TakeDamage(attackDamage);
-            Debug.Log("����� ������� " + building.type);
-
-            nextAttackTime = Time.time + attackCooldown;
-
-            if (building.IsDestroyed())
+            if (target == blockingFence)
             {
-                currentTarget = null;
+                blockingFence = null;
+                UpdateNavigation();
+            }
+            else
+            {
+                FindNewTarget();
             }
         }
     }
@@ -116,16 +164,13 @@ public class ZombieAI : MonoBehaviour, damageable
     public void TakeDamage(float amount)
     {
         health -= amount;
-        if (health <= 0)
-        {
-            animator.SetTrigger("Death");
-            Die();
-        }
+        if (health <= 0) Die();
     }
 
     void Die()
     {
+        animator.SetTrigger("Death");
         AchievementManager.Instance.IncrementProgress("Охотник за головами", 1);
-        Destroy(gameObject);
+        Destroy(gameObject, 1f);
     }
 }
